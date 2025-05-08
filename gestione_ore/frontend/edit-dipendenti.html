@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestione Dipendenti</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="css/base.css" rel="stylesheet" />
+  <link href="css/dipendenti.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Barra di navigazione -->
+  <nav class="navbar navbar-dark">
+    <div class="container-fluid">
+      <div class="ms-auto">
+        <button id="logoutBtn" class="btn btn-outline-light btn-sm">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Badge ruolo utente -->
+  <div class="user-role-badge">
+    Ruolo: <span id="userRoleDisplay">user</span>
+  </div>
+
+  <div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div></div>
+      <a href="dashboard.html" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Torna alla Dashboard
+      </a>
+    </div>
+    
+    <div class="card shadow-sm">
+      <div class="card-header dipendenti-header">
+        <h5 class="mb-0">Gestione Dipendenti</h5>
+      </div>
+      <div class="card-body">
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="employee-search" class="form-control" placeholder="Cerca per nome, cognome, sede, qualifica...">
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-dipendenti">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Qualifica</th>
+                <th>Sede</th>
+                <th width="80">Salva</th>
+                <th width="80">Elimina</th>
+              </tr>
+            </thead>
+            <tbody id="employee-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script posizionati alla fine del body per migliorare le prestazioni -->
+  <script src="js/auth-common.js"></script>
+  <script src="js/edit-dipendenti.js"></script>
+</body>
+</html>

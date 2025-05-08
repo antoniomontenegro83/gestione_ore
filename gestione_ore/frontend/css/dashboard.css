@@ -1,0 +1,107 @@
+/**
+ * dashboard.css - Stili per la dashboard
+ */
+
+/* Card di navigazione */
+.card {
+  transition: all 0.3s ease;
+  border-width: 2px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06) !important;
+  filter: brightness(1.05);
+}
+
+/* Colori delle card */
+.card-new-employee {
+  background-color: #d4edda;
+  border-color: #28a745;
+}
+
+.card-new-employee h5 {
+  color: #155724;
+}
+
+.card-time-entry {
+  background-color: #cfe2ff;
+  border-color: #0d6efd;
+}
+
+.card-time-entry h5 {
+  color: #0d6efd;
+}
+
+.card-weekly-report {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+}
+
+.card-weekly-report h5 {
+  color: #856404;
+}
+
+.card-edit-employees {
+  background-color: #ffdab9;
+  border-color: #ff8c00;
+}
+
+.card-edit-employees h5 {
+  color: #b25000;
+}
+
+.card-shifts-management {
+  background-color: #d1e7dd;
+  border-color: #198754;
+}
+
+.card-shifts-management h5 {
+  color: #0f5132;
+}
+
+.card-monthly-report {
+  background-color: #e2e3e5;
+  border-color: #6c757d;
+}
+
+.card-monthly-report h5 {
+  color: #383d41;
+}
+
+.card-manage-sedi {
+  background-color: #d1ecf1;
+  border-color: #0dcaf0;
+}
+
+.card-manage-sedi h5 {
+  color: #055160;
+}
+
+.card-privileges {
+  background-color: #ffe8e9;
+  border-color: #dc3545;
+}
+
+.card-privileges h5 {
+  color: #721c24;
+}
+
+/* Layout griglia dashboard */
+.row {
+  margin-bottom: 1.5rem;
+}
+
+/* Badge ruolo */
+.role-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50rem;
+  background-color: #0d6efd;
+  color: white;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}

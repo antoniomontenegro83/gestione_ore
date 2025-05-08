@@ -1,0 +1,82 @@
+/**
+ * turni.css - Stili per la gestione dei turni
+ */
+
+/* Card header turni */
+.card-header.turni-header {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border-bottom: 2px solid #198754;
+}
+
+/* Tabella turni */
+.table-primary {
+  --bs-table-bg: #d1e7dd;
+  --bs-table-striped-bg: #c7dfd5;
+  --bs-table-active-bg: #bdd8ce;
+  --bs-table-hover-bg: #c1dbd1;
+  --bs-table-border-color: #bfd0c7;
+  color: #0f5132;
+}
+
+/* Stili modali */
+.modal-content {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: none;
+}
+
+/* Compact form for time entry */
+.compact-form {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.form-spacing {
+  margin-bottom: 1rem;
+}
+
+.btn-lg-custom {
+  padding: 0.5rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* Page title */
+.page-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #198754;
+  font-weight: 600;
+}
+
+/* Nav container */
+.nav-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+/* Back button */
+.back-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Success modal */
+.modal-header.success-header {
+  background-color: #198754;
+  color: white;
+}

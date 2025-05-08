@@ -1,0 +1,76 @@
+/**
+ * dipendenti.css - Stili per la gestione dei dipendenti
+ */
+
+/* Form container */
+.form-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
+/* Card stili per la gestione dipendenti */
+.card-header.dipendenti-header {
+  background-color: #ffdab9;
+  color: #b25000;
+  border-bottom: 2px solid #ff8c00;
+}
+
+/* Card stili per la creazione nuovo dipendente */
+.card-header.new-dipendente-header {
+  background-color: #d4edda;
+  color: #155724;
+  border-bottom: 2px solid #28a745;
+}
+
+/* Stili tabelle dipendenti */
+.table-dipendenti thead {
+  background-color: #800020;
+  color: white;
+}
+
+/* Search container */
+.search-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.search-container .form-control {
+  padding-left: 2.5rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  color: #6c757d;
+}
+
+/* Animazione bottoni azioni */
+.btn-action {
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Input form dipendenti */
+.form-select, .form-control {
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+}
+
+.form-select {
+  padding-right: 2.25rem;
+}
+
+/* Truncate long text in select options */
+select option {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

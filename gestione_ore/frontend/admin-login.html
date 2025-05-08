@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Amministratore Sistema</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="css/login.css" rel="stylesheet">
+</head>
+<body>
+  <div class="login-card admin-login-card shadow">
+    <h4 class="login-title">Accesso Amministratore</h4>
+    <form id="adminLoginForm" class="login-form">
+      <div class="mb-3">
+        <input type="text" class="form-control" id="username" placeholder="Username" required>
+      </div>
+      <div class="mb-3">
+        <input type="password" class="form-control" id="password" placeholder="Password" required>
+      </div>
+      <div id="loginError" class="login-error text-danger small mb-2"></div>
+      <button type="submit" class="btn admin-login-btn text-white w-100">Login</button>
+    </form>
+  </div>
+
+  <!-- Script posizionato alla fine del body per migliorare le prestazioni -->
+  <script src="js/admin-login.js"></script>
+</body>
+</html>
