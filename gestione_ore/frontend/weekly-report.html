@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Settimanale</title>
+</head>
+<body>
+  <h1>Report Settimanale</h1>
+  <form id="report-form">
+    
+    <label>Cerca Dipendente:</label>
+    <input type="text" id="employee-search" class="form-control" placeholder="Nome, cognome, qualifica, sede">
+    <label class="mt-2">Dipendente:</label>
+    <select id="employee_id" class="form-select" size="6" required></select>
+    
+    <label>Data in settimana: <input type="date" id="week_date" required></label>
+    <button type="submit">Genera</button>
+  </form>
+  <button onclick="window.print()">Stampa / Esporta PDF</button>
+  <div id="report-header"></div>
+  <table border="1" id="report-table">
+    <thead>
+      <tr><th>Giorno</th><th>Ingresso</th><th>Uscita</th><th>Ore</th></tr>
+    </thead>
+    <tbody id="report-body"></tbody>
+    <tfoot>
+      <tr><td colspan="3"><strong>Ore Totali</strong></td><td id="total-hours"></td></tr>
+    </tfoot>
+  </table>
+  <a href="dashboard.html">Torna alla Dashboard</a>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { padding: 8px; text-align: center; border: 1px solid #333; }
+    @media print {
+      form, a, button:not(.print) { display: none; }
+      body { font-size: 12pt; }
+      table { margin-top: 0; }
+    }
+  </style>
+  <script src="weekly-report.js">
+    let dipendenti = [];
+    async function caricaDipendenti() {
+      const res = await fetch('../backend_gestione_ore/employees/list.php');
+      dipendenti = await res.json();
+      aggiornaSelect('');
+    }
+
+    function aggiornaSelect(filtro) {
+      const select = document.getElementById('employee_id');
+      select.innerHTML = '';
+      const filtroLower = filtro.toLowerCase();
+      dipendenti.forEach(emp => {
+        const descrizione = `${emp.cognome} ${emp.nome} – ${emp.qualifica} – ${emp.sede}`;
+        if (descrizione.toLowerCase().includes(filtroLower)) {
+          const opt = document.createElement('option');
+          opt.value = emp.id;
+          opt.textContent = descrizione;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      caricaDipendenti();
+      document.getElementById('employee-search').addEventListener('input', e => {
+        aggiornaSelect(e.target.value);
+      });
+    });
+    </script>
+    
+</body>
+</html>
