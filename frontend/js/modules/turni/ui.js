@@ -1,22 +1,22 @@
-// frontend/js/modules/turni/ui.js
+// frontend/js/modules/dipendenti/ui.js
 /**
- * modules/turni/ui.js - Gestione interfaccia utente per turni con badge
+ * ui.js - Gestione interfaccia utente per dipendenti con badge avanzati
  */
-import { Utils } from '../../main.js';
-import turniState from './state.js';
-import { TURNI_CONFIG } from './config.js';
+import { Notifications } from '../../main.js';
+import dipendentiState from './state.js';
+import { DIPENDENTI_CONFIG } from './config.js';
 
-export const TurniUI = {
+export const DipendentiUI = {
   showLoading() {
-    const tbody = document.querySelector('#shifts-table tbody');
+    const tbody = document.getElementById('employee-table');
     if (tbody) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="${TURNI_CONFIG.TABLE_COLUMNS}" class="text-center py-4">
+          <td colspan="6" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Caricamento...</span>
             </div>
-            <p class="mt-2">${TURNI_CONFIG.MESSAGES.LOADING}</p>
+            <p class="mt-2">${DIPENDENTI_CONFIG.MESSAGES.LOADING}</p>
           </td>
         </tr>
       `;
@@ -24,11 +24,11 @@ export const TurniUI = {
   },
 
   showError(message) {
-    const tbody = document.querySelector('#shifts-table tbody');
+    const tbody = document.getElementById('employee-table');
     if (tbody) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="${TURNI_CONFIG.TABLE_COLUMNS}" class="text-center text-danger py-4">
+          <td colspan="7" class="text-center text-danger py-4">
             <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
             <p class="mt-2">${message}</p>
           </td>
@@ -37,159 +37,175 @@ export const TurniUI = {
     }
   },
 
-  showEmpty(message = TURNI_CONFIG.MESSAGES.NO_RESULTS) {
-    const tbody = document.querySelector('#shifts-table tbody');
-    if (tbody) {
+  renderTable(filter = '') {
+    const tbody = document.getElementById('employee-table');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    const lowerFilter = filter.toLowerCase();
+    let dipendentiFiltrati = dipendentiState.getEmployees();
+
+    if (filter) {
+      dipendentiFiltrati = dipendentiFiltrati.filter(emp => {
+        const searchableText = [
+          emp.nome,
+          emp.cognome,
+          emp.qualifica,
+          emp.sede
+        ].filter(Boolean).join(' ').toLowerCase();
+        
+        return searchableText.includes(lowerFilter);
+      });
+    }
+
+    this.updateCounter(dipendentiFiltrati.length);
+    this.updateBadgeCounts();
+
+    if (dipendentiFiltrati.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="${TURNI_CONFIG.TABLE_COLUMNS}" class="text-center text-muted py-4">
-            ${message}
+          <td colspan="7" class="text-center text-muted py-4">
+            ${filter ? DIPENDENTI_CONFIG.MESSAGES.NO_RESULTS : DIPENDENTI_CONFIG.MESSAGES.NO_DATA}
           </td>
         </tr>
       `;
-    }
-  },
-
-  renderTable() {
-    const tbody = document.querySelector('#shifts-table tbody');
-    if (!tbody) return;
-
-    const turni = turniState.getFilteredTurni();
-    const isAdmin = turniState.getAdminStatus();
-
-    tbody.innerHTML = '';
-
-    // Aggiorna badge
-    this.updateBadgeCounts();
-
-    if (turni.length === 0) {
-      this.showEmpty();
       return;
     }
 
-    turni.forEach(turno => {
-      if (!turno.nome || !turno.cognome) return;
-      
-      const row = this.createTableRow(turno, isAdmin);
+    dipendentiFiltrati.forEach((emp, index) => {
+      const row = this.createTableRow(emp, index);
       tbody.appendChild(row);
     });
+    
+    const table = document.getElementById('employee-table-container');
+    if (table && !table.classList.contains('table-striped')) {
+      table.classList.add('table-striped');
+    }
   },
 
-  createTableRow(turno, isAdmin) {
+  createTableRow(emp, index) {
     const row = document.createElement('tr');
-    row.setAttribute('data-turno-id', turno.id);
+    row.setAttribute('data-employee-id', emp.id);
     
-    const ingresso = Utils.formatDateTime(turno.entry_date, turno.entry_time);
-    const uscita = Utils.formatDateTime(turno.exit_date, turno.exit_time);
-    
-    let azioni = '';
-    if (isAdmin) {
-      azioni = `
-        <button class="btn btn-sm btn-warning me-1" onclick="window.apriModifica(${turno.id}, '${turno.entry_date}', '${turno.entry_time}', '${turno.exit_date}', '${turno.exit_time}')">
-          Modifica
-        </button>
-        <button class="btn btn-sm btn-danger" onclick="window.preparaEliminazioneTurno(${turno.id})">
-          Elimina
-        </button>
-      `;
+    if (index % 2 === 0) {
+      row.style.backgroundColor = '#f8f9fa';
     }
     
     row.innerHTML = `
-      <td>${turno.qualifica || '-'}</td>
-      <td>${turno.cognome}</td>
-      <td>${turno.nome}</td>
-      <td>${ingresso}</td>
-      <td>${uscita}</td>
-      <td>${azioni}</td>
+      <td>${emp.cognome || '-'}</td>
+      <td>${emp.nome || '-'}</td>
+      <td>${emp.qualifica || '-'}</td>
+      <td>${emp.sede || '-'}</td>
+      <td>
+        <button class="btn btn-sm btn-warning me-1" onclick="window.apriModifica(${emp.id})">Modifica</button>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-danger" onclick="window.eliminaDipendente(${emp.id})">Elimina</button>
+      </td>
     `;
+    
+    row.addEventListener('mouseenter', function() {
+      this.style.backgroundColor = '#e3f2fd';
+    });
+    
+    row.addEventListener('mouseleave', function() {
+      if (index % 2 === 0) {
+        this.style.backgroundColor = '#f8f9fa';
+      } else {
+        this.style.backgroundColor = '#ffffff';
+      }
+    });
     
     return row;
   },
 
+  updateCounter(count) {
+    const totalEmployeesElement = document.getElementById('totalEmployees');
+    if (totalEmployeesElement) {
+      totalEmployeesElement.textContent = count;
+    }
+  },
+
   updateBadgeCounts() {
-    const turni = turniState.getFilteredTurni();
-    const today = new Date().toISOString().split('T')[0];
+    const employees = dipendentiState.getEmployees();
+    const totalCount = employees.length;
     
-    const stats = {
-      totale: turni.length,
-      oggi: turni.filter(t => t.entry_date === today).length,
-      settimana: this.countTurniSettimana(turni),
-      mese: this.countTurniMese(turni),
-      notturni: turni.filter(t => this.isTurnoNotturno(t)).length,
-      festivi: turni.filter(t => this.isTurnoFestivo(t)).length
-    };
-    
-    this.renderTurniBadges(stats);
-    this.updateSediBadges(turni);
-  },
-
-  renderTurniBadges(stats) {
-    let badgeContainer = document.getElementById('turniBadgeContainer');
-    if (!badgeContainer) {
-      const filterCard = document.querySelector('.card-body');
-      if (filterCard) {
-        badgeContainer = document.createElement('div');
-        badgeContainer.id = 'turniBadgeContainer';
-        badgeContainer.className = 'badge-container mt-3 mb-3';
-        filterCard.prepend(badgeContainer);
-      }
-    }
-    
-    if (badgeContainer) {
-      badgeContainer.innerHTML = `
-        <div class="d-flex gap-2 flex-wrap align-items-center">
-          <span class="badge bg-primary" data-live-update="turni-totale">
-            <i class="bi bi-calendar3"></i> Totale: ${stats.totale}
-          </span>
-          <span class="badge bg-success" data-live-update="turni-oggi">
-            <i class="bi bi-calendar-day"></i> Oggi: ${stats.oggi}
-          </span>
-          <span class="badge bg-info" data-live-update="turni-settimana">
-            <i class="bi bi-calendar-week"></i> Settimana: ${stats.settimana}
-          </span>
-          <span class="badge bg-warning text-dark" data-live-update="turni-mese">
-            <i class="bi bi-calendar-month"></i> Mese: ${stats.mese}
-          </span>
-          <span class="badge bg-dark" data-live-update="turni-notturni">
-            <i class="bi bi-moon-stars"></i> Notturni: ${stats.notturni}
-          </span>
-          <span class="badge bg-danger" data-live-update="turni-festivi">
-            <i class="bi bi-calendar-x"></i> Festivi: ${stats.festivi}
-          </span>
-        </div>
-      `;
-    }
-  },
-
-  updateSediBadges(turni) {
-    const sediCount = {};
-    turni.forEach(t => {
-      const sede = t.sede || 'Non specificata';
-      sediCount[sede] = (sediCount[sede] || 0) + 1;
+    // Conta per qualifica
+    const qualificheCounts = {};
+    employees.forEach(emp => {
+      const qualifica = emp.qualifica || 'Non specificata';
+      qualificheCounts[qualifica] = (qualificheCounts[qualifica] || 0) + 1;
     });
     
-    let badgeContainer = document.getElementById('turniSediBadgeContainer');
+    // Conta per sede
+    const sediCounts = {};
+    employees.forEach(emp => {
+      const sede = emp.sede || 'Non assegnata';
+      sediCounts[sede] = (sediCounts[sede] || 0) + 1;
+    });
+    
+    // Aggiorna badge totale
+    const totalBadge = document.getElementById('totalEmployeesBadge');
+    if (totalBadge) {
+      totalBadge.textContent = totalCount;
+    }
+    
+    // Crea/aggiorna container dei badge
+    this.updateBadgeContainer(qualificheCounts, sediCounts);
+  },
+
+  updateBadgeContainer(qualificheCounts, sediCounts) {
+    let badgeContainer = document.getElementById('employeeBadgeContainer');
     if (!badgeContainer) {
-      const mainContainer = document.getElementById('turniBadgeContainer');
-      if (mainContainer) {
+      const searchContainer = document.querySelector('.search-container');
+      if (searchContainer) {
         badgeContainer = document.createElement('div');
-        badgeContainer.id = 'turniSediBadgeContainer';
-        badgeContainer.className = 'mt-2';
-        mainContainer.appendChild(badgeContainer);
+        badgeContainer.id = 'employeeBadgeContainer';
+        badgeContainer.className = 'badge-container mt-3';
+        searchContainer.after(badgeContainer);
+      } else {
+        // Se non c'è search container, mettilo prima della tabella
+        const cardBody = document.querySelector('.card-body');
+        if (cardBody) {
+          badgeContainer = document.createElement('div');
+          badgeContainer.id = 'employeeBadgeContainer';
+          badgeContainer.className = 'badge-container mb-3';
+          const table = cardBody.querySelector('.table-responsive');
+          if (table) {
+            cardBody.insertBefore(badgeContainer, table);
+          }
+        }
       }
     }
     
     if (badgeContainer) {
       let html = '<div class="d-flex gap-2 flex-wrap">';
-      Object.entries(sediCount).forEach(([sede, count]) => {
-        const color = this.getColorForSede(sede);
-        html += `<span class="badge bg-${color}" data-live-update="turni-sede-${sede}">
-          <i class="bi bi-geo-alt"></i> ${sede}: ${count}
-        </span>`;
+      
+      // Badge per qualifiche (top 5)
+      const topQualifiche = Object.entries(qualificheCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+      
+      topQualifiche.forEach(([qualifica, count]) => {
+        const color = this.getColorForQualifica(qualifica);
+        html += `<span class="badge bg-${color}" data-live-update="qualifica-${qualifica}">${qualifica}: ${count}</span>`;
       });
+      
+      // Badge per sedi
+      Object.entries(sediCounts).forEach(([sede, count]) => {
+        const color = this.getColorForSede(sede);
+        html += `<span class="badge bg-${color}" data-live-update="sede-${sede}"><i class="bi bi-building"></i> ${sede}: ${count}</span>`;
+      });
+      
       html += '</div>';
       badgeContainer.innerHTML = html;
     }
+  },
+
+  getColorForQualifica(qualifica) {
+    const colors = ['primary', 'success', 'warning', 'info', 'secondary'];
+    const hash = qualifica.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return colors[hash % colors.length];
   },
 
   getColorForSede(sede) {
@@ -200,118 +216,43 @@ export const TurniUI = {
       'Brindisi (Aeroportuale)': 'info',
       'Nucleo Nautico': 'danger',
       'Nucleo Sommozzatori': 'dark',
-      'Non specificata': 'secondary'
+      'Non assegnata': 'secondary'
     };
     return sedeColors[sede] || 'secondary';
   },
 
-  countTurniSettimana(turni) {
-    const today = new Date();
-    const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - today.getDay());
-    weekStart.setHours(0, 0, 0, 0);
-    
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekStart.getDate() + 6);
-    weekEnd.setHours(23, 59, 59, 999);
-    
-    return turni.filter(t => {
-      const turnoDate = new Date(t.entry_date);
-      return turnoDate >= weekStart && turnoDate <= weekEnd;
-    }).length;
-  },
-
-  countTurniMese(turni) {
-    const today = new Date();
-    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    
-    return turni.filter(t => {
-      const turnoDate = new Date(t.entry_date);
-      return turnoDate >= monthStart && turnoDate <= monthEnd;
-    }).length;
-  },
-
-  isTurnoNotturno(turno) {
-    const oraIngresso = parseInt(turno.entry_time.split(':')[0]);
-    const oraUscita = parseInt(turno.exit_time.split(':')[0]);
-    return oraIngresso >= 22 || oraIngresso < 6 || oraUscita >= 22 || oraUscita < 6;
-  },
-
-  isTurnoFestivo(turno) {
-    const date = new Date(turno.entry_date);
-    const dayOfWeek = date.getDay();
-    
-    // Domenica o Sabato
-    if (dayOfWeek === 0 || dayOfWeek === 6) return true;
-    
-    // Controlla anche le festività italiane
-    const festivita = [
-      '01-01', // Capodanno
-      '01-06', // Epifania
-      '04-25', // Liberazione
-      '05-01', // Festa del Lavoro
-      '06-02', // Repubblica
-      '08-15', // Ferragosto
-      '11-01', // Ognissanti
-      '12-08', // Immacolata
-      '12-25', // Natale
-      '12-26', // Santo Stefano
-    ];
-    
-    const monthDay = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-    return festivita.includes(monthDay);
-  },
-
-  populateDipendenteSelect(filtro = '') {
-    const select = document.getElementById('dipendenteSelect');
+  populateSelect(selectId, items, selectedValue) {
+    const select = document.getElementById(selectId);
     if (!select) return;
-    
-    const selectedValue = select.value;
-    select.innerHTML = '<option value="">-- Seleziona dipendente --</option>';
-    
-    const dipendenti = turniState.getDipendentiUnici();
-    
-    dipendenti.forEach(dip => {
-      const descrizione = `${dip.cognome} ${dip.nome} - ${dip.qualifica || ''}`;
-      if (!filtro || descrizione.toLowerCase().includes(filtro.toLowerCase())) {
-        const option = document.createElement('option');
-        option.value = dip.nomeCompleto;
-        option.textContent = descrizione;
-        if (dip.nomeCompleto === selectedValue) {
-          option.selected = true;
-        }
-        select.appendChild(option);
+
+    select.innerHTML = '<option value="">-- Seleziona --</option>';
+    items.forEach(item => {
+      const option = document.createElement('option');
+      const value = item.nome || item.qualifica || item.sede || item;
+      option.value = value;
+      option.textContent = value;
+      if (value === selectedValue) {
+        option.selected = true;
       }
+      select.appendChild(option);
     });
   },
 
-  setFilterDate(dateInputId, value) {
-    const input = document.getElementById(dateInputId);
-    if (input) {
-      input.value = value;
-    }
-  },
-
-  populateModifyModal(turno) {
-    document.getElementById('modificaId').value = turno.id;
-    document.getElementById('modificaIngresso').value = `${turno.entry_date}T${turno.entry_time}`;
-    document.getElementById('modificaUscita').value = `${turno.exit_date}T${turno.exit_time}`;
-  },
-
-  clearFilters() {
-    const elements = {
-      dipendenteSearch: document.getElementById('dipendenteSearch'),
-      dipendenteSelect: document.getElementById('dipendenteSelect'),
-      dataInizio: document.getElementById('dataInizio'),
-      dataFine: document.getElementById('dataFine')
-    };
+  populateModifyModal(employee) {
+    document.getElementById('modificaId').value = employee.id;
+    document.getElementById('modificaCognome').value = employee.cognome || '';
+    document.getElementById('modificaNome').value = employee.nome || '';
     
-    if (elements.dipendenteSearch) elements.dipendenteSearch.value = '';
-    if (elements.dipendenteSelect) elements.dipendenteSelect.selectedIndex = 0;
-    if (elements.dataInizio) elements.dataInizio.value = '';
-    if (elements.dataFine) elements.dataFine.value = '';
+    this.populateSelect('modificaQualifica', dipendentiState.getQualifiche(), employee.qualifica);
+    this.populateSelect('modificaSede', dipendentiState.getSedi(), employee.sede);
+  },
+
+  populateDeleteModal(employee) {
+    const deleteEmployeeName = document.getElementById('deleteEmployeeName');
+    if (deleteEmployeeName) {
+      deleteEmployeeName.textContent = `${employee.cognome} ${employee.nome}`;
+    }
   }
 };
 
-export default TurniUI;
+export default DipendentiUI;
