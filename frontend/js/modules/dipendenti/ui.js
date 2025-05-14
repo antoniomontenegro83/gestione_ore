@@ -12,7 +12,7 @@ export const DipendentiUI = {
     if (tbody) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="7" class="text-center py-4">
+          <td colspan="6" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Caricamento...</span>
             </div>
@@ -48,7 +48,6 @@ export const DipendentiUI = {
     if (filter) {
       dipendentiFiltrati = dipendentiFiltrati.filter(emp => {
         const searchableText = [
-          emp.id?.toString(),
           emp.nome,
           emp.cognome,
           emp.qualifica,
@@ -93,7 +92,6 @@ export const DipendentiUI = {
     }
     
     row.innerHTML = `
-      <td>${emp.id}</td>
       <td>${emp.cognome || '-'}</td>
       <td>${emp.nome || '-'}</td>
       <td>${emp.qualifica || '-'}</td>
