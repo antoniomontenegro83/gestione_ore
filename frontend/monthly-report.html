@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Mensile</title>
+</head>
+<body>
+  <h1>Report Mensile</h1>
+  <form id="report-form">
+    
+    <label>Cerca Dipendente:</label>
+    <input type="text" id="employee-search" class="form-control" placeholder="Nome, cognome, qualifica, sede">
+    <label class="mt-2">Dipendente:</label>
+    <select id="employee_id" class="form-select" size="6" required></select>
+    
+    <label>Mese: <input type="number" id="month" min="1" max="12" required></label>
+    <label>Anno: <input type="number" id="year" required></label>
+    <button type="submit">Genera</button>
+  </form>
+  <button onclick="window.print()">Stampa / Esporta PDF</button>
+  <table border="1" id="report-table">
+    <thead>
+      <tr><th>Ingresso</th><th>Uscita</th></tr>
+    </thead>
+    <tbody id="report-body"></tbody>
+  </table>
+  <a href="dashboard.html">Torna alla Dashboard</a>
+  <style>
+    @media print {
+      form, a, button:not(.print) { display: none; }
+      table { width: 100%%; border-collapse: collapse; }
+    }
+  </style>
+  <script src="monthly-report.js">
+    let dipendenti = [];
+    async function caricaDipendenti() {
+      const res = await fetch('../backend_gestione_ore/employees/list.php');
+      dipendenti = await res.json();
+      aggiornaSelect('');
+    }
+
+    function aggiornaSelect(filtro) {
+      const select = document.getElementById('employee_id');
+      select.innerHTML = '';
+      const filtroLower = filtro.toLowerCase();
+      dipendenti.forEach(emp => {
+        const descrizione = `${emp.cognome} ${emp.nome} – ${emp.qualifica} – ${emp.sede}`;
+        if (descrizione.toLowerCase().includes(filtroLower)) {
+          const opt = document.createElement('option');
+          opt.value = emp.id;
+          opt.textContent = descrizione;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      caricaDipendenti();
+      document.getElementById('employee-search').addEventListener('input', e => {
+        aggiornaSelect(e.target.value);
+      });
+    });
+    </script>
+    
+</body>
+</html>
