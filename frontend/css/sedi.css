@@ -1,0 +1,184 @@
+/* frontend/css/sedi.css - Aggiornamenti per la versione modularizzata */
+/**
+ * sedi.css - Stili per la gestione delle sedi
+ */
+
+/* Card header sedi */
+.card-header.sedi-header {
+  background-color: #d1ecf1;
+  color: #055160;
+  border-bottom: 2px solid #0dcaf0;
+}
+
+/* Lista sedi */
+.list-group-item {
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(5px);
+}
+
+/* Campo ricerca */
+#sede-search {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+#sede-search::before {
+  content: "\F52A";
+  font-family: "bootstrap-icons";
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+}
+
+/* Nome sede */
+.sede-nome {
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+/* Form aggiungi sede */
+.add-sede-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.add-sede-form .form-control {
+  flex-grow: 1;
+  transition: all 0.3s ease;
+}
+
+.add-sede-form .form-control:focus {
+  border-color: #0dcaf0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+}
+
+/* Bottone aggiungi sede */
+.btn-success.add-sede-btn {
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.btn-success.add-sede-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+}
+
+/* Bottone elimina sede */
+.btn-danger.delete-sede-btn {
+  transition: all 0.3s;
+}
+
+.btn-danger.delete-sede-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+}
+
+/* Animazione per sede aggiunta */
+.list-group-item.list-group-item-success {
+  background-color: #d1e7dd !important;
+  border-color: #badbcc !important;
+  animation: pulseGreen 0.5s ease-in-out;
+}
+
+@keyframes pulseGreen {
+  0% { background-color: #d1e7dd; }
+  50% { background-color: #a3cfbb; }
+  100% { background-color: #d1e7dd; }
+}
+
+/* Loader */
+.list-group-item .spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Transizioni per eliminazione */
+.list-group-item.removing {
+  background-color: #f8d7da;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 0.3s ease;
+}
+
+/* Modale di conferma */
+#confirmDeleteSedeModal .modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: none;
+}
+
+#confirmDeleteSedeModal .modal-body {
+  padding: 1.5rem;
+  background-color: #fff5f5;
+}
+
+#confirmDeleteSedeModal .btn-close-white {
+  filter: brightness(0) invert(1);
+}
+
+#deleteSedeName {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .add-sede-form {
+    flex-direction: column;
+  }
+  
+  .add-sede-form .btn {
+    width: 100%;
+  }
+  
+  .list-group-item {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .sede-nome {
+    font-size: 0.9rem;
+  }
+  
+  .delete-sede-btn {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* Messaggio vuoto */
+.list-group-item.text-center.text-muted {
+  background-color: #f8f9fa;
+  border-style: dashed;
+}
+
+/* Icone */
+.list-group-item i {
+  margin-right: 0.25rem;
+}
+
+/* Focus e accessibilità */
+.form-control:focus,
+.btn:focus {
+  outline: 2px solid #0dcaf0;
+  outline-offset: 2px;
+}
+
+/* Transizioni smooth per tutti gli elementi */
+* {
+  transition: color 0.15s ease-in-out,
+              background-color 0.15s ease-in-out,
+              border-color 0.15s ease-in-out,
+              box-shadow 0.15s ease-in-out;
+}
