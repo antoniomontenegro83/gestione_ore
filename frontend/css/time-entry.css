@@ -1,0 +1,142 @@
+/**
+ * time-entry.css - Stili specifici per l'inserimento turni
+ */
+
+/* Container più largo per time-entry */
+@media (min-width: 1400px) {
+  .container-xl {
+    max-width: 1320px;
+  }
+}
+
+/* Card styling */
+.card {
+  border-radius: 0.8rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+/* Form spacing */
+.row.g-4 {
+  margin-bottom: 1rem;
+}
+
+/* Campo di ricerca dipendente più visibile */
+#employee-search {
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+}
+
+/* Select dipendente più grande */
+#employee_id {
+  font-size: 1.05rem;
+  padding: 0.6rem 1rem;
+}
+
+/* Campi data e ora più grandi */
+input[type="date"],
+input[type="time"] {
+  font-size: 1.05rem;
+  padding: 0.6rem 1rem;
+}
+
+/* Pulsante più grande */
+.btn-success.btn-lg {
+  font-size: 1.2rem;
+  padding: 0.75rem 3rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-success.btn-lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+}
+
+/* Preview box styling */
+#anteprima-ore {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  font-size: 1.05rem;
+}
+
+#anteprima-ore h6 {
+  font-size: 1.25rem;
+  color: #0d6efd;
+  margin-bottom: 1.25rem;
+}
+
+#anteprima-ore .ore-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+#anteprima-ore .totale-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container-xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem 1rem;
+  }
+  
+  .btn-success.btn-lg {
+    font-size: 1.1rem;
+    padding: 0.6rem 2rem;
+  }
+}
+
+/* Form validation feedback */
+.form-control:invalid {
+  border-color: #dc3545;
+}
+
+.form-control:valid {
+  border-color: #198754;
+}
+
+/* Animazioni per feedback visivo */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#anteprima-ore {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Status messages */
+#status {
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+#status .alert {
+  margin: 0 auto;
+  max-width: 600px;
+  border-radius: 0.6rem;
+  animation: fadeIn 0.3s ease-out;
+}

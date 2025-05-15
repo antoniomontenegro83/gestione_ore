@@ -1,0 +1,69 @@
+/**
+ * table-layout-fixed.css - Layout fisso permanente per la tabella dipendenti
+ * IMPORTANTE: Questo file NON deve essere modificato per garantire stabilità
+ */
+
+/* STRUTTURA TABELLA BLOCCATA - NON MODIFICARE */
+#employee-table-fixed {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+
+/* LARGHEZZE COLONNE BLOCCATE - NON MODIFICARE */
+#employee-table-fixed colgroup col:nth-child(1) { width: 10% !important; }
+#employee-table-fixed colgroup col:nth-child(2) { width: 20% !important; }
+#employee-table-fixed colgroup col:nth-child(3) { width: 20% !important; }
+#employee-table-fixed colgroup col:nth-child(4) { width: 20% !important; }
+#employee-table-fixed colgroup col:nth-child(5) { width: 15% !important; }
+#employee-table-fixed colgroup col:nth-child(6) { width: 15% !important; }
+
+/* FORZA LARGHEZZE ANCHE SU TH - NON MODIFICARE */
+#employee-table-fixed thead th:nth-child(1) { width: 10% !important; }
+#employee-table-fixed thead th:nth-child(2) { width: 20% !important; }
+#employee-table-fixed thead th:nth-child(3) { width: 20% !important; }
+#employee-table-fixed thead th:nth-child(4) { width: 20% !important; }
+#employee-table-fixed thead th:nth-child(5) { width: 15% !important; }
+#employee-table-fixed thead th:nth-child(6) { width: 15% !important; }
+
+/* FORZA LARGHEZZE ANCHE SU TD - NON MODIFICARE */
+#employee-table-fixed tbody td:nth-child(1) { width: 10% !important; }
+#employee-table-fixed tbody td:nth-child(2) { width: 20% !important; }
+#employee-table-fixed tbody td:nth-child(3) { width: 20% !important; }
+#employee-table-fixed tbody td:nth-child(4) { width: 20% !important; }
+#employee-table-fixed tbody td:nth-child(5) { width: 15% !important; }
+#employee-table-fixed tbody td:nth-child(6) { width: 15% !important; }
+
+/* OVERFLOW CONTROL - NON MODIFICARE */
+#employee-table-fixed td,
+#employee-table-fixed th {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* ALLINEAMENTO FISSO - NON MODIFICARE */
+#employee-table-fixed td:first-child,
+#employee-table-fixed td:last-child {
+  text-align: center !important;
+}
+
+/* RESPONSIVE BLOCCATO - NON MODIFICARE */
+@media (max-width: 768px) {
+  /* Nascondi solo ID e Sede su mobile */
+  #employee-table-fixed th:nth-child(1),
+  #employee-table-fixed td:nth-child(1),
+  #employee-table-fixed th:nth-child(5),
+  #employee-table-fixed td:nth-child(5) {
+    display: none !important;
+  }
+  
+  /* Ridistribuisci larghezze su mobile */
+  #employee-table-fixed th:nth-child(2),
+  #employee-table-fixed td:nth-child(2) { width: 30% !important; }
+  #employee-table-fixed th:nth-child(3),
+  #employee-table-fixed td:nth-child(3) { width: 30% !important; }
+  #employee-table-fixed th:nth-child(4),
+  #employee-table-fixed td:nth-child(4) { width: 20% !important; }
+  #employee-table-fixed th:nth-child(6),
+  #employee-table-fixed td:nth-child(6) { width: 20% !important; }
+}
