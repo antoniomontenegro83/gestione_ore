@@ -172,13 +172,17 @@ export const ReportEvents = {
       // Formato: YYYY-MM
       const [year, month] = monthValue.split('-');
       
-      // Calcola il primo e l'ultimo giorno del mese
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0);
+      // Calcola il primo giorno del mese (sempre 1)
+      const startDateStr = `${year}-${month}-01`;
       
-      // Formatta le date in YYYY-MM-DD
-      const startDateStr = startDate.toISOString().split('T')[0];
-      const endDateStr = endDate.toISOString().split('T')[0];
+      // Calcola l'ultimo giorno del mese
+      const lastDay = this.getLastDayOfMonth(parseInt(year), parseInt(month));
+      const endDateStr = `${year}-${month}-${lastDay.toString().padStart(2, '0')}`;
+      
+      // Debug per verificare le date
+      console.log('Mese selezionato:', year, month);
+      console.log('Data inizio:', startDateStr);
+      console.log('Data fine:', endDateStr);
       
       // Imposta le date nel form
       ReportUI.setFilterDates(startDateStr, endDateStr);
@@ -189,6 +193,23 @@ export const ReportEvents = {
         endDate: endDateStr
       });
     }
+  },
+  
+  // Funzione di supporto per calcolare l'ultimo giorno del mese in modo affidabile
+  getLastDayOfMonth(year, month) {
+    // Con il mese che inizia da 1 (gennaio=1), dobbiamo usare il mese corrente
+    // Nota: La sequenza 31,28/29,31,30,31,30,31,31,30,31,30,31
+    const daysInMonth = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    
+    // Gestione anno bisestile per febbraio
+    if (month === 2) {
+      // Anno bisestile se divisibile per 4 ma non per 100, a meno che sia divisibile per 400
+      if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+        return 29;
+      }
+    }
+    
+    return daysInMonth[month];
   },
 
   handleEmployeeSearch(e) {
