@@ -6,7 +6,7 @@ import { Api } from '../../main.js';
 export const ReportAPI = {
   async loadDipendenti() {
     try {
-      return await Api.get('dipendenti/list.php');
+      return await Api.get('report/ore.php', { action: 'dipendenti' });
     } catch (error) {
       console.error('Errore nel caricamento dei dipendenti:', error);
       throw error;
@@ -15,7 +15,7 @@ export const ReportAPI = {
 
   async loadSedi() {
     try {
-      return await Api.get('sedi/list.php');
+      return await Api.get('report/ore.php', { action: 'sedi' });
     } catch (error) {
       console.error('Errore nel caricamento delle sedi:', error);
       throw error;
@@ -33,7 +33,15 @@ export const ReportAPI = {
 
   async loadReportData(filters) {
     try {
-      return await Api.get('report/ore.php', filters);
+      // Normalizza i nomi dei parametri per il backend
+      const apiFilters = {
+        employeeId: filters.employeeId,
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+        sede: filters.sede
+      };
+      
+      return await Api.get('report/ore.php', apiFilters);
     } catch (error) {
       console.error('Errore nel caricamento dei dati del report:', error);
       throw error;
@@ -44,10 +52,22 @@ export const ReportAPI = {
     try {
       // Costruisci l'URL per l'esportazione
       const params = new URLSearchParams();
-      for (const key in filters) {
-        if (filters[key]) {
-          params.append(key, filters[key]);
-        }
+      
+      // Normalizza i nomi dei parametri
+      if (filters.employeeId) {
+        params.append('employeeId', filters.employeeId);
+      }
+      
+      if (filters.startDate) {
+        params.append('startDate', filters.startDate);
+      }
+      
+      if (filters.endDate) {
+        params.append('endDate', filters.endDate);
+      }
+      
+      if (filters.sede) {
+        params.append('sede', filters.sede);
       }
       
       // URL completa per l'esportazione

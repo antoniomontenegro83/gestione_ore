@@ -4,10 +4,12 @@
 import reportState from './state.js';
 import ReportUI from './ui.js';
 import ReportAPI from './api.js';
-import { Notifications } from '../../main.js';
+import { Notifications, Utils } from '../../main.js';
 import { REPORT_CONFIG } from './config.js';
 
 export const ReportEvents = {
+  debounceTimer: null,
+
   setupEventListeners() {
     console.log('ReportEvents: Setup event listeners...');
     
@@ -34,6 +36,36 @@ export const ReportEvents = {
     if (searchInput) {
       searchInput.addEventListener('input', this.handleEmployeeSearch.bind(this));
     }
+
+    // Cambio formato
+    const formatoSelect = document.getElementById('formatoSelect');
+    if (formatoSelect) {
+      formatoSelect.addEventListener('change', this.handleFormatChange.bind(this));
+    }
+
+    // Cambio sede
+    const sedeSelect = document.getElementById('sedeSelect');
+    if (sedeSelect) {
+      sedeSelect.addEventListener('change', this.handleSedeChange.bind(this));
+    }
+
+    // Cambio dipendente
+    const dipendenteSelect = document.getElementById('dipendenteSelect');
+    if (dipendenteSelect) {
+      dipendenteSelect.addEventListener('change', this.handleEmployeeChange.bind(this));
+    }
+
+    // Date change
+    const dataInizio = document.getElementById('dataInizio');
+    const dataFine = document.getElementById('dataFine');
+    
+    if (dataInizio) {
+      dataInizio.addEventListener('change', this.handleDateChange.bind(this));
+    }
+    
+    if (dataFine) {
+      dataFine.addEventListener('change', this.handleDateChange.bind(this));
+    }
   },
 
   async handleGenerateReport() {
@@ -41,7 +73,7 @@ export const ReportEvents = {
     
     // Raccogli filtri
     const filters = {
-      employee_id: document.getElementById('dipendenteSelect')?.value || '',
+      employeeId: document.getElementById('dipendenteSelect')?.value || '',
       startDate: document.getElementById('dataInizio')?.value || '',
       endDate: document.getElementById('dataFine')?.value || '',
       sede: document.getElementById('sedeSelect')?.value || '',
@@ -51,6 +83,12 @@ export const ReportEvents = {
     // Validazione date
     if (!filters.startDate || !filters.endDate) {
       Notifications.warning(REPORT_CONFIG.MESSAGES.SELECT_PERIOD);
+      return;
+    }
+
+    // Verifica se la data di inizio è maggiore della data di fine
+    if (filters.startDate > filters.endDate) {
+      Notifications.warning(REPORT_CONFIG.MESSAGES.PERIOD_INVALID);
       return;
     }
     
@@ -74,6 +112,11 @@ export const ReportEvents = {
       
       // Visualizza il report
       ReportUI.renderReport();
+      
+      // Mostra il messaggio di conferma solo se ci sono dati
+      if (data && data.length > 0) {
+        Notifications.success(REPORT_CONFIG.MESSAGES.FILTER_APPLIED);
+      }
     } catch (error) {
       console.error('Errore nel caricamento del report:', error);
       Notifications.error(REPORT_CONFIG.MESSAGES.ERROR_LOADING);
@@ -111,12 +154,15 @@ export const ReportEvents = {
     const reportContainer = document.getElementById('report-container');
     if (reportContainer) {
       reportContainer.innerHTML = `
-        <div class="text-center py-5 text-muted">
+        <div id="report-placeholder" class="text-center py-5 text-muted">
           <i class="bi bi-graph-up" style="font-size: 3rem;"></i>
           <p class="mt-3">Seleziona i parametri e clicca "Genera" per visualizzare il report</p>
         </div>
       `;
     }
+
+    // Notifica utente
+    Notifications.info("Filtri ripristinati");
   },
 
   handleMonthSelect(e) {
@@ -136,12 +182,57 @@ export const ReportEvents = {
       
       // Imposta le date nel form
       ReportUI.setFilterDates(startDateStr, endDateStr);
+
+      // Aggiorna lo stato con le nuove date
+      reportState.setCurrentFilters({
+        startDate: startDateStr,
+        endDate: endDateStr
+      });
     }
   },
 
   handleEmployeeSearch(e) {
-    // Implementa la ricerca dipendenti se necessario
-    // (per ora possiamo lasciare vuoto)
+    const searchText = e.target.value;
+
+    // Clear any existing timer
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+
+    // Debounce the search to avoid too many UI updates
+    this.debounceTimer = setTimeout(() => {
+      // Update UI with filtered employees
+      if (searchText.length >= REPORT_CONFIG.SEARCH_MIN_LENGTH || searchText.length === 0) {
+        ReportUI.filterDipendentiSelect(searchText);
+      }
+    }, REPORT_CONFIG.DEBOUNCE_DELAY);
+  },
+
+  handleFormatChange(e) {
+    const format = e.target.value;
+    reportState.setCurrentFilters({ formato: format });
+  },
+
+  handleSedeChange(e) {
+    const sede = e.target.value;
+    reportState.setCurrentFilters({ sede: sede });
+  },
+
+  handleEmployeeChange(e) {
+    const employeeId = e.target.value;
+    reportState.setCurrentFilters({ employeeId: employeeId });
+  },
+
+  handleDateChange() {
+    const startDate = document.getElementById('dataInizio').value;
+    const endDate = document.getElementById('dataFine').value;
+    
+    if (startDate && endDate) {
+      reportState.setCurrentFilters({
+        startDate: startDate,
+        endDate: endDate
+      });
+    }
   },
 
   async handleExportReport(format, filters) {

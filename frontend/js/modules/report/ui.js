@@ -25,19 +25,30 @@ export const ReportUI = {
       select.appendChild(option);
     }
     
+    // Aggiungi le opzioni ordinate
+    const sortedDipendenti = [...dipendenti].sort((a, b) => {
+      const cognomeA = a.cognome || '';
+      const cognomeB = b.cognome || '';
+      return cognomeA.localeCompare(cognomeB) || 
+             (a.nome || '').localeCompare(b.nome || '');
+    });
+    
     // Aggiungi le opzioni
-    dipendenti.forEach(dip => {
+    sortedDipendenti.forEach(dip => {
       const option = document.createElement('option');
-      option.value = dip.id;
-      const descrizione = `${dip.cognome} ${dip.nome} - ${dip.qualifica || ''} - ${dip.sede || ''}`;
+      option.value = dip.employee_id || dip.id;
+      const qualifica = dip.qualifica ? ` - ${dip.qualifica}` : '';
+      const sede = dip.sede ? ` - ${dip.sede}` : '';
+      const descrizione = `${dip.cognome} ${dip.nome}${qualifica}${sede}`;
       option.textContent = descrizione;
+      option.dataset.searchable = descrizione.toLowerCase();
       select.appendChild(option);
     });
     
     // Ripristina il valore selezionato
     const currentFilters = reportState.getCurrentFilters();
-    if (currentFilters.employee_id) {
-      select.value = currentFilters.employee_id;
+    if (currentFilters.employeeId) {
+      select.value = currentFilters.employeeId;
     }
   },
 
@@ -63,8 +74,8 @@ export const ReportUI = {
     // Aggiungi le opzioni
     sedi.forEach(sede => {
       const option = document.createElement('option');
-      option.value = sede.nome;
-      option.textContent = sede.nome;
+      option.value = sede.nome || sede.sede; // Supporto per entrambi i formati
+      option.textContent = sede.nome || sede.sede;
       select.appendChild(option);
     });
     
@@ -72,6 +83,40 @@ export const ReportUI = {
     const currentFilters = reportState.getCurrentFilters();
     if (currentFilters.sede) {
       select.value = currentFilters.sede;
+    }
+  },
+
+  filterDipendentiSelect(searchText) {
+    const select = document.getElementById('dipendenteSelect');
+    if (!select) return;
+    
+    const searchLower = searchText.toLowerCase();
+    
+    // Mostra/nascondi le opzioni in base alla ricerca
+    Array.from(select.options).forEach(option => {
+      if (option.value === '') return; // Mantieni sempre l'opzione predefinita
+      
+      const searchable = option.dataset.searchable || option.textContent.toLowerCase();
+      const visible = !searchText || searchable.includes(searchLower);
+      
+      // Utilizziamo la manipolazione diretta del DOM per performance migliori
+      option.style.display = visible ? '' : 'none';
+    });
+    
+    // Se c'è un solo risultato visibile, selezionalo automaticamente
+    if (searchText.length >= REPORT_CONFIG.SEARCH_MIN_LENGTH) {
+      const visibleOptions = Array.from(select.options).filter(opt => 
+        opt.value !== '' && opt.style.display !== 'none'
+      );
+      
+      if (visibleOptions.length === 1) {
+        select.value = visibleOptions[0].value;
+        
+        // Aggiorna lo stato
+        reportState.setCurrentFilters({
+          employeeId: visibleOptions[0].value
+        });
+      }
     }
   },
 

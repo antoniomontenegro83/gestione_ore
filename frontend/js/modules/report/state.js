@@ -10,11 +10,12 @@ class ReportState {
     this.reportData = [];
     this.isLoading = false;
     this.currentFilters = {
-      employee_id: '',
-      startDate: new Date().toISOString().split('T')[0], // oggi
-      endDate: new Date().toISOString().split('T')[0],   // oggi
+      employeeId: '',
+      startDate: this.getTodayString(),
+      endDate: this.getTodayString(),
       sede: '',
-      qualifica: ''
+      qualifica: '',
+      formato: 'html'
     };
     this.summary = {
       feriali_diurne: 0,
@@ -23,6 +24,14 @@ class ReportState {
       festive_notturne: 0,
       totale_ore: 0
     };
+  }
+
+  getTodayString() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   setDipendenti(dipendenti) {
@@ -50,7 +59,7 @@ class ReportState {
   }
 
   setReportData(data) {
-    this.reportData = data;
+    this.reportData = data || [];
     // Aggiorna il summary
     this.calculateSummary();
   }
@@ -68,7 +77,9 @@ class ReportState {
   }
 
   setCurrentFilters(filters) {
+    // Aggiorna i filtri in modo immutabile
     this.currentFilters = {...this.currentFilters, ...filters};
+    console.log('Filtri aggiornati:', this.currentFilters);
   }
 
   getCurrentFilters() {
@@ -106,17 +117,23 @@ class ReportState {
 
   findDipendenteById(id) {
     if (!id) return null;
-    return this.dipendenti.find(dip => dip.id === parseInt(id));
+    return this.dipendenti.find(dip => {
+      const dipId = dip.id || dip.employee_id;
+      return dipId === parseInt(id) || dipId === id;
+    });
   }
 
   clearFilters() {
     this.currentFilters = {
-      employee_id: '',
-      startDate: new Date().toISOString().split('T')[0], // oggi
-      endDate: new Date().toISOString().split('T')[0],   // oggi
+      employeeId: '',
+      startDate: this.getTodayString(),
+      endDate: this.getTodayString(),
       sede: '',
-      qualifica: ''
+      qualifica: '',
+      formato: 'html'
     };
+    this.reportData = [];
+    this.calculateSummary();
   }
 }
 
