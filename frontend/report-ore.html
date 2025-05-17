@@ -50,8 +50,8 @@
           <div class="col-md-3">
             <label class="form-label">Opzioni</label>
             <div class="d-grid gap-2">
-              <button class="btn btn-primary" onclick="generaReport()">Genera</button>
-              <button class="btn btn-outline-secondary" type="button" onclick="pulisciFiltri()">Pulisci</button>
+              <button id="generaReportBtn" class="btn btn-primary">Genera</button>
+              <button id="pulisciFiltriBtn" class="btn btn-outline-secondary" type="button">Pulisci</button>
             </div>
           </div>
         </div>
@@ -86,6 +86,7 @@
               <option value="html">Visualizza</option>
               <option value="excel">Excel</option>
               <option value="pdf">PDF</option>
+              <option value="csv">CSV</option>
             </select>
           </div>
         </div>
@@ -103,6 +104,20 @@
             <p class="mt-3">Seleziona i parametri e clicca "Genera" per visualizzare il report</p>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast di notifica -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+    <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong class="me-auto" id="toastTitle">Notifica</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="toastMessage">
+        Messaggio di notifica
       </div>
     </div>
   </div>
