@@ -359,7 +359,7 @@ try {
                 <td style="text-align:center; font-size: 19pt;"><?php echo decimal_to_time($sommario['feriali_diurne']); ?></td>
             </tr>
             <tr>
-                <td style="text-align:center;">Ore Festivo e Notturno</td>
+                <td style="text-align:center;">Ore Festive o Notturne</td>
                 <td style="text-align:center; font-size: 19pt;"><?php echo decimal_to_time($sommario['festivo_e_notturno']); ?></td>
             </tr>
             <tr>
@@ -384,7 +384,7 @@ try {
                     <th class="col-time">Ora Out</th>
                     <th class="col-sede">Sede</th>
                     <th class="col-hours"><div class="multiline">Feriali<br>Diurne</div></th>
-                    <th class="col-hours"><div class="multiline">Festivo e<br>Notturno</div></th>
+                    <th class="col-hours"><div class="multiline">Festive o<br>Notturne</div></th>
                     <th class="col-hours"><div class="multiline">Festive<br>Notturne</div></th>
                     <th class="col-hours">Totale</th>
                 </tr>
