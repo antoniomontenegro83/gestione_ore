@@ -196,12 +196,8 @@ export const ReportUI = {
                   <td class="text-end"><strong>${summary.feriali_diurne.toFixed(2)}</strong></td>
                 </tr>
                 <tr>
-                  <td>Ore Feriali Notturne:</td>
-                  <td class="text-end"><strong>${summary.feriali_notturne.toFixed(2)}</strong></td>
-                </tr>
-                <tr>
-                  <td>Ore Festive Diurne:</td>
-                  <td class="text-end"><strong>${summary.festive_diurne.toFixed(2)}</strong></td>
+                  <td>Ore Festive e Notturne:</td>
+                  <td class="text-end"><strong>${(summary.feriali_notturne + summary.festive_diurne).toFixed(2)}</strong></td>
                 </tr>
                 <tr>
                   <td>Ore Festive Notturne:</td>
@@ -221,17 +217,16 @@ export const ReportUI = {
         <table class="table table-striped align-middle">
           <thead class="table-primary">
             <tr>
-              <th>Dipendente</th>
-              <th>Qualifica</th>
-              <th>Sede</th>
-              <th>Data</th>
-              <th>Ingresso</th>
-              <th>Uscita</th>
-              <th class="text-center">Feriali D.</th>
-              <th class="text-center">Feriali N.</th>
-              <th class="text-center">Festive D.</th>
-              <th class="text-center">Festive N.</th>
-              <th class="text-center">Totale</th>
+              <th style="width: 8%;">Qualifica</th>
+              <th style="width: 18%;">Dipendente</th>
+              <th style="width: 12%;">Sede</th>
+              <th style="width: 10%;">Data</th>
+              <th style="width: 7%;">Ingresso</th>
+              <th style="width: 7%;">Uscita</th>
+              <th class="text-center" style="width: 12%"><div style="line-height: 1.2;">Feriali<br>Diurne</div></th>
+              <th class="text-center" style="width: 12%"><div style="line-height: 1.2;">Festive e<br>Notturne</div></th>
+              <th class="text-center" style="width: 12%"><div style="line-height: 1.2;">Festive<br>Notturne</div></th>
+              <th class="text-center" style="width: 9%">Totale</th>
             </tr>
           </thead>
           <tbody>
@@ -239,17 +234,19 @@ export const ReportUI = {
     
     // Aggiungo le righe
     reportData.forEach(item => {
+      // Calcola la somma delle feriali notturne e festive diurne
+      const festivoENotturno = parseFloat(item.feriali_notturne) + parseFloat(item.festive_diurne);
+      
       html += `
         <tr>
-          <td>${item.cognome} ${item.nome}</td>
           <td>${item.qualifica || '-'}</td>
+          <td>${item.cognome} ${item.nome}</td>
           <td>${item.sede || '-'}</td>
           <td>${this.formatDate(item.entry_date)}</td>
           <td>${this.formatTime(item.entry_time)}</td>
           <td>${this.formatTime(item.exit_time)}</td>
           <td class="text-center">${parseFloat(item.feriali_diurne).toFixed(2)}</td>
-          <td class="text-center">${parseFloat(item.feriali_notturne).toFixed(2)}</td>
-          <td class="text-center">${parseFloat(item.festive_diurne).toFixed(2)}</td>
+          <td class="text-center">${festivoENotturno.toFixed(2)}</td>
           <td class="text-center">${parseFloat(item.festive_notturne).toFixed(2)}</td>
           <td class="text-center"><strong>${parseFloat(item.totale_ore).toFixed(2)}</strong></td>
         </tr>
