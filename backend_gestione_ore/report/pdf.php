@@ -85,16 +85,15 @@ try {
     // Calcola i totali
     $sommario = [
         'feriali_diurne' => 0,
-        'feriali_notturne' => 0,
-        'festive_diurne' => 0,
+        'festivo_e_notturno' => 0, // Colonna combinata
         'festive_notturne' => 0,
         'totale_ore' => 0
     ];
     
     foreach ($turni as $turno) {
         $sommario['feriali_diurne'] += floatval($turno['feriali_diurne']);
-        $sommario['feriali_notturne'] += floatval($turno['feriali_notturne']);
-        $sommario['festive_diurne'] += floatval($turno['festive_diurne']);
+        // Combina feriali_notturne e festive_diurne 
+        $sommario['festivo_e_notturno'] += floatval($turno['feriali_notturne']) + floatval($turno['festive_diurne']);
         $sommario['festive_notturne'] += floatval($turno['festive_notturne']);
         $sommario['totale_ore'] += floatval($turno['totale_ore']);
     }
@@ -107,28 +106,62 @@ try {
     // Costruisci il nome del file
     $nomeFile = 'report_ore';
     $nomeDipendente = '';
+    $dettaglioDipendente = '';
+    $meseAnno = '';
+
+    // Estrai il mese e l'anno dalle date
+    $mesiInItaliano = [
+        '01' => 'gennaio',
+        '02' => 'febbraio',
+        '03' => 'marzo',
+        '04' => 'aprile',
+        '05' => 'maggio',
+        '06' => 'giugno',
+        '07' => 'luglio',
+        '08' => 'agosto',
+        '09' => 'settembre',
+        '10' => 'ottobre',
+        '11' => 'novembre',
+        '12' => 'dicembre'
+    ];
+
+    // Ottieni il mese e l'anno dalla data di inizio
+    $meseNum = date('m', strtotime($startDate));
+    $anno = date('Y', strtotime($startDate));
+    $meseNome = $mesiInItaliano[$meseNum] ?? $meseNum;
+    $meseAnno = $meseNome . '_' . $anno;
+
     if ($employeeId) {
-        $stmtDip = $pdo->prepare("SELECT cognome, nome FROM dipendenti WHERE id = ?");
+        $stmtDip = $pdo->prepare("SELECT cognome, nome, qualifica FROM dipendenti WHERE id = ?");
         $stmtDip->execute([$employeeId]);
         if ($dipendente = $stmtDip->fetch(PDO::FETCH_ASSOC)) {
-            $nomeFile = $dipendente['cognome'] . '_' . $dipendente['nome'];
+            $qualifica = strtolower($dipendente['qualifica'] ?? 'nd');
+            $cognome = strtolower($dipendente['cognome'] ?? '');
+            $nome = strtolower($dipendente['nome'] ?? '');
+            
+            // Formato: qualifica_cognome_nome_mese_anno per il nome del file
+            $nomeFile = $qualifica . '_' . $cognome . '_' . $nome . '_' . $meseAnno;
+            // Per il titolo del PDF
             $nomeDipendente = $dipendente['cognome'] . ' ' . $dipendente['nome'];
+            
+            // Formato: QUALIFICA Cognome Nome per intestazione PDF
+            $dettaglioDipendente = strtoupper($dipendente['qualifica'] ?? '') . ' ' . $dipendente['cognome'] . ' ' . $dipendente['nome'];
         }
+    } else {
+        // Se non è specificato un dipendente, includi solo mese e anno
+        $nomeFile = 'report_ore_' . $meseAnno;
     }
-    
+
     // Sanitizza il nome del file
-    $nomeFile .= '_' . str_replace('-', '', $startDate) . '_' . str_replace('-', '', $endDate);
     $nomeFile = preg_replace('/[^a-zA-Z0-9_-]/', '_', $nomeFile);
     
     // Titolo del report
     $titoloReport = "Report Ore dal " . date('d/m/Y', strtotime($startDate)) . " al " . date('d/m/Y', strtotime($endDate));
     
-    if ($nomeDipendente) {
-        $titoloReport .= " - " . $nomeDipendente;
-    }
-    
     if ($sede) {
-        $titoloReport .= " - Sede: " . $sede;
+        $sedeInfo = " - Sede: " . $sede;
+    } else {
+        $sedeInfo = "";
     }
     
     // Genera il contenuto HTML
@@ -142,14 +175,14 @@ try {
     <title><?php echo htmlspecialchars($titoloReport); ?></title>
     <style>
         @page { 
-            size: A4 portrait; 
-            margin: 12mm;
+            size: A4 portrait;
+            margin: 0.5mm; /* Margini molto stretti */
         }
         body { 
             font-family: Arial, sans-serif; 
-            font-size: 14pt;
+            font-size: 18pt; /* Testo generale ancora più grande */
             margin: 0;
-            padding: 0;
+            padding: 4mm;
             color: #333;
             background-color: #f7f9fc;
         }
@@ -175,6 +208,116 @@ try {
         #content {
             display: none; /* Nascondi completamente il contenuto HTML */
         }
+        .dipendente-info {
+            text-align: center;
+            font-size: 22pt; /* Ancora più grande */
+            color: #800020;
+            border-bottom: none !important;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        /* Stili per le celle della tabella */
+        table {
+            font-size: 16pt; /* Carattere ancora più grande */
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+        th, td {
+            padding: 8px 6px; /* Padding aumentato */
+            text-align: center;
+            border: 1px solid #ddd;
+            word-wrap: break-word; /* Permette al testo di andare a capo */
+            overflow-wrap: break-word; /* Fallback per browser più vecchi */
+            hyphens: auto; /* Gestisce anche sillabazione */
+            max-width: 150px; /* Limita la larghezza massima */
+            height: auto; /* Regola l'altezza in base al contenuto */
+        }
+        th {
+            background-color: #800020;
+            color: white;
+            font-weight: bold;
+            font-size: 15pt; /* Intestazioni più grandi */
+            vertical-align: middle;
+            height: auto; /* Altezza automatica basata sul contenuto */
+            padding: 10px 6px; /* Padding verticale aumentato */
+            line-height: 1.2; /* Interlinea più generosa */
+        }
+        /* Stili per le intestazioni multilinea */
+        th div.multiline {
+            line-height: 1.3;
+            font-size: 15pt;
+            padding: 0;
+            margin: 0;
+        }
+        /* Stili per le celle con testo che deve andare a capo */
+        td.wrap-text {
+            white-space: normal; /* Permette il testo di andare a capo */
+            word-break: break-word; /* Fa andare a capo le parole lunghe */
+            min-width: 80px; /* Imposta una larghezza minima */
+            line-height: 1.3; /* Interlinea più generosa */
+        }
+        /* Stili per le intestazioni specifiche */
+        th.col-hours {
+            width: 9%;
+        }
+        td.col-hours {
+            width: 9%;
+            font-size: 17pt; /* Font size specifico per i numeri delle ore */
+        }
+        th.col-qual {
+            width: 8%;
+        }
+        th.col-name {
+            width: 18%;
+        }
+        th.col-date {
+            width: 10%;
+        }
+        th.col-time {
+            width: 7%;
+        }
+        th.col-sede {
+            width: 12%;
+        }
+        /* Colori e stili aggiuntivi */
+        h1 {
+            font-size: 24pt; /* Titolo principale ancora più grande */
+            text-align: center;
+            color: #800020;
+            margin: 5mm 0 4mm 0;
+        }
+        h2 {
+            font-size: 22pt; /* Sottotitoli ancora più grandi */
+            color: #800020;
+            border-bottom: 1px solid #800020;
+            padding-bottom: 5px;
+            margin: 6mm 0 4mm 0;
+        }
+        .total-row {
+            background-color: rgba(128, 0, 32, 0.1);
+            font-weight: bold;
+        }
+        .total-row td {
+            font-size: 17pt; /* Riga totali più grande */
+        }
+        .summary-table {
+            width: 85%; /* Tabella leggermente più larga */
+            margin: 0 auto;
+            font-size: 18pt; /* Dimensione testo riepilogo aumentata */
+        }
+        .summary-table th, .summary-table td {
+            padding: 10px; /* Padding maggiore */
+            line-height: 1.4; /* Interlinea più ampia */
+        }
+        .footer {
+            text-align: center;
+            margin-top: 5mm;
+            font-size: 13pt;
+            color: #777;
+            padding-top: 2mm;
+            border-top: 1px solid #800020;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -197,33 +340,35 @@ try {
         </div>
         
         <h1><?php echo htmlspecialchars($titoloReport); ?></h1>
+        <?php if (!empty($dettaglioDipendente)): ?>
+        <h2 class="dipendente-info"><?php echo htmlspecialchars($dettaglioDipendente); ?></h2>
+        <?php endif; ?>
+        <?php if (!empty($sedeInfo)): ?>
+        <p class="sede-info" style="text-align: center; margin-top: -10px; margin-bottom: 20px; font-weight: bold; font-size: 18pt;"><?php echo htmlspecialchars($sedeInfo); ?></p>
+        <?php endif; ?>
         
         <h2>Riepilogo Ore</h2>
         
         <table class="summary-table">
             <tr>
-                <th style="width:50%; text-align:center;">Tipo di ore</th>
-                <th style="width:50%; text-align:center;">Totale</th>
+                <th style="width:60%; text-align:center;">Tipo di ore</th>
+                <th style="width:40%; text-align:center;">Totale</th>
             </tr>
             <tr>
                 <td style="text-align:center;">Ore Feriali Diurne</td>
-                <td style="text-align:center;"><?php echo decimal_to_time($sommario['feriali_diurne']); ?></td>
+                <td style="text-align:center; font-size: 19pt;"><?php echo decimal_to_time($sommario['feriali_diurne']); ?></td>
             </tr>
             <tr>
-                <td style="text-align:center;">Ore Feriali Notturne</td>
-                <td style="text-align:center;"><?php echo decimal_to_time($sommario['feriali_notturne']); ?></td>
-            </tr>
-            <tr>
-                <td style="text-align:center;">Ore Festive Diurne</td>
-                <td style="text-align:center;"><?php echo decimal_to_time($sommario['festive_diurne']); ?></td>
+                <td style="text-align:center;">Ore Festivo e Notturno</td>
+                <td style="text-align:center; font-size: 19pt;"><?php echo decimal_to_time($sommario['festivo_e_notturno']); ?></td>
             </tr>
             <tr>
                 <td style="text-align:center;">Ore Festive Notturne</td>
-                <td style="text-align:center;"><?php echo decimal_to_time($sommario['festive_notturne']); ?></td>
+                <td style="text-align:center; font-size: 19pt;"><?php echo decimal_to_time($sommario['festive_notturne']); ?></td>
             </tr>
             <tr class="total-row">
                 <td style="text-align:center;"><strong>TOTALE ORE</strong></td>
-                <td style="text-align:center;"><strong><?php echo decimal_to_time($sommario['totale_ore']); ?></strong></td>
+                <td style="text-align:center; font-size: 20pt;"><strong><?php echo decimal_to_time($sommario['totale_ore']); ?></strong></td>
             </tr>
         </table>
         
@@ -231,29 +376,34 @@ try {
         <table>
             <thead>
                 <tr>
-                    <th class="col-date">Data Ingresso</th>
-                    <th class="col-time">Ingresso</th>
-                    <th class="col-date">Data Uscita</th>
-                    <th class="col-time">Uscita</th>
+                    <th class="col-qual">Qual.</th>
+                    <th class="col-name">Dipendente</th>
+                    <th class="col-date">Data In</th>
+                    <th class="col-time">Ora In</th>
+                    <th class="col-date">Data Out</th>
+                    <th class="col-time">Ora Out</th>
                     <th class="col-sede">Sede</th>
-                    <th class="col-hours">Feriali Diurne</th>
-                    <th class="col-hours">Feriali Notturne</th>
-                    <th class="col-hours">Festive Diurne</th>
-                    <th class="col-hours">Festive Notturne</th>
+                    <th class="col-hours"><div class="multiline">Feriali<br>Diurne</div></th>
+                    <th class="col-hours"><div class="multiline">Festivo e<br>Notturno</div></th>
+                    <th class="col-hours"><div class="multiline">Festive<br>Notturne</div></th>
                     <th class="col-hours">Totale</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($turni as $turno): ?>
+                <?php foreach ($turni as $turno): 
+                    // Calcola la somma delle feriali notturne e festive diurne
+                    $festivo_e_notturno = floatval($turno['feriali_notturne']) + floatval($turno['festive_diurne']);
+                ?>
                 <tr>
+                    <td class="col-qual"><?php echo htmlspecialchars($turno['qualifica'] ?? '-'); ?></td>
+                    <td class="col-name wrap-text"><?php echo htmlspecialchars($turno['cognome'] . ' ' . $turno['nome']); ?></td>
                     <td class="col-date"><?php echo date('d/m/Y', strtotime($turno['entry_date'])); ?></td>
                     <td class="col-time"><?php echo substr($turno['entry_time'], 0, 5); ?></td>
                     <td class="col-date"><?php echo date('d/m/Y', strtotime($turno['exit_date'])); ?></td>
                     <td class="col-time"><?php echo substr($turno['exit_time'], 0, 5); ?></td>
-                    <td class="col-sede"><?php echo htmlspecialchars($turno['sede'] ?? '-'); ?></td>
+                    <td class="col-sede wrap-text"><?php echo htmlspecialchars($turno['sede'] ?? '-'); ?></td>
                     <td class="col-hours"><?php echo decimal_to_time($turno['feriali_diurne']); ?></td>
-                    <td class="col-hours"><?php echo decimal_to_time($turno['feriali_notturne']); ?></td>
-                    <td class="col-hours"><?php echo decimal_to_time($turno['festive_diurne']); ?></td>
+                    <td class="col-hours"><?php echo decimal_to_time($festivo_e_notturno); ?></td>
                     <td class="col-hours"><?php echo decimal_to_time($turno['festive_notturne']); ?></td>
                     <td class="col-hours"><strong><?php echo decimal_to_time($turno['totale_ore']); ?></strong></td>
                 </tr>
@@ -261,12 +411,11 @@ try {
             </tbody>
             <tfoot>
                 <tr class="total-row">
-                    <td colspan="5"><strong>TOTALE GENERALE</strong></td>
+                    <td colspan="7"><strong>TOTALE GENERALE</strong></td>
                     <td><?php echo decimal_to_time($sommario['feriali_diurne']); ?></td>
-                    <td><?php echo decimal_to_time($sommario['feriali_notturne']); ?></td>
-                    <td><?php echo decimal_to_time($sommario['festive_diurne']); ?></td>
+                    <td><?php echo decimal_to_time($sommario['festivo_e_notturno']); ?></td>
                     <td><?php echo decimal_to_time($sommario['festive_notturne']); ?></td>
-                    <td><?php echo decimal_to_time($sommario['totale_ore']); ?></td>
+                    <td><strong><?php echo decimal_to_time($sommario['totale_ore']); ?></strong></td>
                 </tr>
             </tfoot>
         </table>
@@ -305,87 +454,126 @@ try {
                                 display: block !important;
                                 font-family: Helvetica, Arial, sans-serif;
                                 color: #000000;
-                                font-size: 20pt; /* Dimensione grande per il PDF */
+                                font-size: 18pt;
                                 background-color: white;
+                                padding: 4mm;
                             }
-                            h1, h2 {
+                            h1 {
                                 color: #800020;
-                                font-size: 24pt; /* Titoli più grandi per il PDF */
+                                font-size: 24pt;
+                                text-align: center;
+                                margin: 5mm 0 4mm 0;
                             }
                             h2 {
-                                font-size: 22pt; /* Sottotitoli per il PDF */
-                                margin-top: 18px;
-                                margin-bottom: 12px;
+                                font-size: 22pt;
+                                color: #800020;
                                 border-bottom: 1px solid #800020;
-                                padding-bottom: 8px;
+                                padding-bottom: 5px;
+                                margin: 6mm 0 4mm 0;
+                            }
+                            .dipendente-info {
+                                text-align: center;
+                                font-size: 22pt;
+                                color: #800020;
+                                border-bottom: none !important;
+                                margin-top: 5px;
+                                margin-bottom: 15px;
+                                font-weight: bold;
+                            }
+                            .sede-info {
+                                text-align: center;
+                                font-size: 18pt;
+                                color: #333333;
+                                margin-top: -10px;
+                                margin-bottom: 15px;
                             }
                             .header {
                                 position: relative;
                                 display: flex;
                                 justify-content: space-between;
                                 align-items: center;
-                                margin-bottom: 18px;
+                                margin-bottom: 10px;
                                 border-bottom: 1px solid #800020;
-                                padding-bottom: 12px;
+                                padding-bottom: 8px;
                             }
                             .logo {
-                                height: 60px;
-                                margin-right: 20px;
+                                height: 40px;
+                                margin-right: 10px;
                             }
                             .company-info {
                                 flex-grow: 1;
                                 text-align: right;
-                                font-size: 16pt;
+                                font-size: 14pt;
                                 color: #555;
                             }
                             table { 
                                 width: 100%; 
                                 border-collapse: collapse; 
-                                margin-bottom: 18px;
-                                font-size: 20pt; /* Tabella per il PDF */
-                                table-layout: fixed;
+                                margin-bottom: 15px;
+                                font-size: 16pt;
                             }
                             th, td { 
                                 border: 1px solid #ddd; 
-                                padding: 12px 6px; /* Padding per il PDF */
+                                padding: 8px 6px;
                                 text-align: center;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                line-height: 1.5;
+                                line-height: 1.3;
+                                word-wrap: break-word;
+                                overflow-wrap: break-word;
+                                hyphens: auto;
+                                max-width: 150px;
                             }
                             th { 
                                 background-color: #800020;
                                 color: white;
                                 font-weight: bold;
-                                font-size: 20pt;
+                                font-size: 15pt;
+                                padding: 10px 6px;
+                                line-height: 1.2;
                             }
+                            th div.multiline {
+                                line-height: 1.3;
+                                font-size: 15pt;
+                            }
+                            td.wrap-text {
+                                white-space: normal;
+                                word-break: break-word;
+                                min-width: 80px;
+                            }
+                            td.col-hours {
+                                font-size: 17pt;
+                            }
+                            
                             .summary-table {
-                                width: 100%;
-                                margin: 0 0 18px 0;
-                                table-layout: auto;
-                                font-size: 20pt;
+                                width: 85%;
+                                margin: 0 auto 15px auto;
+                                font-size: 18pt;
                             }
                             .summary-table th {
                                 text-align: center !important;
                                 padding: 10px;
+                                font-size: 18pt;
                             }
                             .summary-table td {
                                 text-align: center !important;
                                 font-weight: bold;
                                 padding: 10px;
+                                font-size: 18pt;
+                                line-height: 1.4;
                             }
                             .total-row {
                                 background-color: rgba(128, 0, 32, 0.1);
                                 font-weight: bold;
-                                font-size: 22pt;
                                 color: #800020;
+                            }
+                            .total-row td {
+                                font-size: 17pt;
                             }
                             .footer {
                                 text-align: center;
-                                margin-top: 18px;
-                                font-size: 16pt; /* Footer più grande */
+                                margin-top: 15px;
+                                font-size: 13pt;
                                 color: #777;
-                                padding-top: 10px;
+                                padding-top: 5px;
                                 border-top: 1px solid #800020;
                             }
                         `;
@@ -394,15 +582,26 @@ try {
                         // Assicuriamoci che il contenuto sia visibile durante la generazione del PDF
                         document.getElementById('content').style.display = 'block';
                         
-                        // Crea un nuovo documento PDF in formato verticale
-                        const pdf = new jsPDF('p', 'mm', 'a4');
+                        // Crea un nuovo documento PDF in formato verticale con margini minimi
+                        const pdf = new jsPDF({
+                            orientation: 'portrait',
+                            unit: 'mm',
+                            format: 'a4',
+                            compress: true,
+                            margins: {
+                                top: 0.5,
+                                right: 0.5,
+                                bottom: 0.5,
+                                left: 0.5
+                            }
+                        });
                         
                         // Imposta font e dimensione
                         pdf.setFont("helvetica");
-                        pdf.setFontSize(20); /* Dimensione font di base per il PDF */
+                        pdf.setFontSize(18);
                         
                         html2canvas(document.getElementById('content'), {
-                            scale: 2, /* Scala bilanciata */
+                            scale: 2.5, // Qualità aumentata
                             useCORS: true,
                             logging: false,
                             backgroundColor: "#ffffff"
@@ -410,13 +609,13 @@ try {
                             try {
                                 const imgData = canvas.toDataURL('image/png');
                                 
-                                // Dimensioni ottimizzate per formato verticale
-                                const imgWidth = 190;
-                                const pageHeight = 270;
+                                // Dimensioni ottimizzate per formato verticale con margini minimi
+                                const imgWidth = 204; // A4 width (210mm) minus margins
+                                const pageHeight = 295; // A4 height (297mm) minus margins
                                 const imgHeight = canvas.height * imgWidth / canvas.width;
                                 
                                 // Aggiungi l'immagine alla prima pagina
-                                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                                pdf.addImage(imgData, 'PNG', 3, 3, imgWidth, imgHeight);
                                 
                                 // Se necessario, aggiungi pagine aggiuntive
                                 let heightLeft = imgHeight;
@@ -426,7 +625,7 @@ try {
                                 while (heightLeft > 0) {
                                     position = heightLeft - imgHeight;
                                     pdf.addPage();
-                                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                                    pdf.addImage(imgData, 'PNG', 3, position, imgWidth, imgHeight);
                                     heightLeft -= pageHeight;
                                 }
                                 
