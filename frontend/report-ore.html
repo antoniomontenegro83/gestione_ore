@@ -10,6 +10,13 @@
   <link href="css/base.css" rel="stylesheet" />
   <link href="css/report-ore.css" rel="stylesheet" />
   <link href="css/report-ore-print.css" rel="stylesheet" media="print" />
+  <style>
+    /* Forza il colore bordeaux sulle intestazioni dei report */
+    .card-header.report-header {
+      background-color: #800020 !important;
+      color: white !important;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar navbar-dark">
@@ -34,7 +41,7 @@
     </div>
     
     <div class="card">
-      <div class="card-header report-header">
+      <div class="card-header report-header" style="background-color: #800020; color: white;">
         <h5 class="mb-0">Filtri</h5>
       </div>
       <div class="card-body">
@@ -94,7 +101,7 @@
     </div>
 
     <div class="card mt-3">
-      <div class="card-header report-header">
+      <div class="card-header report-header" style="background-color: #800020; color: white;">
         <h5 class="mb-0">Report Ore</h5>
       </div>
       <div class="card-body">
