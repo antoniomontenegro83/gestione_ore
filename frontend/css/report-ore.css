@@ -2,11 +2,12 @@
  * report-ore.css - Stili per la pagina di report ore
  */
 
-/* Card header report */
-.card-header.report-header {
-  background-color: #e3deff;
-  color: #4b0082;
-  border-bottom: 2px solid #7b68ee;
+/* Card header report - aumentata specificità */
+div.card > .card-header.report-header,
+.card .card-header.report-header {
+  background-color: #800020 !important;
+  color: white !important;
+  border-bottom: 2px solid #800020;
   border-radius: 6px 6px 0 0;
   padding: 12px 20px;
   font-weight: 600;
