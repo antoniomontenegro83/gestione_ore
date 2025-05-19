@@ -131,9 +131,6 @@ try {
         $titoloReport .= " - Sede: " . $sede;
     }
     
-    // Set appropriate headers
-    header('Content-Type: text/html; charset=UTF-8');
-    
     // Genera il contenuto HTML
     ob_start();
 ?>
@@ -141,6 +138,7 @@ try {
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($titoloReport); ?></title>
     <style>
         @page { 
@@ -153,139 +151,43 @@ try {
             margin: 0;
             padding: 0;
             color: #333;
+            background-color: #f7f9fc;
         }
-        /* Intestazione con logo */
-        .header {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            border-bottom: 1px solid #800020;
-            padding-bottom: 12px;
-        }
-        .logo {
-            height: 60px;
-            margin-right: 20px;
-        }
-        .company-info {
-            flex-grow: 1;
-            text-align: right;
-            font-size: 13pt;
-            color: #555;
-        }
-        h1 { 
-            font-size: 18pt; 
-            text-align: center; 
-            margin: 18px 0;
-            color: #800020;
-            padding-bottom: 8px;
-        }
-        h2 {
-            font-size: 16pt;
-            margin-top: 18px;
-            margin-bottom: 12px;
-            color: #800020;
-            border-bottom: 1px solid #800020;
-            padding-bottom: 8px;
-        }
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 18px;
-            font-size: 14pt;
-            table-layout: fixed;
-        }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 8px 4px; 
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.5;
-        }
-        th { 
-            background-color: #800020;
-            color: white;
-            font-weight: bold;
-            font-size: 14pt;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .summary-table {
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            margin: 0 0 18px 0;
-            table-layout: auto;
-            font-size: 14pt;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f9fc;
+            z-index: 1000;
         }
-        .summary-table th {
-            text-align: left;
-            background-color: #800020;
-            color: white;
-            font-weight: bold;
-            width: 50%;
-            font-size: 14pt;
-            padding: 10px;
-        }
-        .summary-table td {
-            text-align: right;
-            font-weight: bold;
-            width: 50%;
-            padding: 10px;
-        }
-        .total-row {
-            background-color: rgba(128, 0, 32, 0.1);
-            font-weight: bold;
-            color: #800020;
-        }
-        .total-row td:last-child {
-            font-size: 110%;
-        }
-        .footer {
+        .loading-message {
+            padding: 20px;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             text-align: center;
-            margin-top: 18px;
-            font-size: 12pt;
-            color: #777;
-            padding-top: 10px;
-            border-top: 1px solid #800020;
         }
-        /* Stili specifici per colonne */
-        .col-date {
-            width: 18%;
-            white-space: nowrap;
-        }
-        .col-sede {
-            width: 18%;
-        }
-        .col-time {
-            width: 9%;
-            white-space: nowrap;
-        }
-        .col-hours {
-            width: 8%;
-            white-space: nowrap;
-        }
-        /* Stile di stampa ottimizzato */
-        @media print {
-            body {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
-            /* Controllo pagine */
-            .page-break {
-                page-break-before: always;
-            }
-            /* Evita interruzioni di pagina all'interno delle righe */
-            tr {
-                page-break-inside: avoid;
-            }
+        #content {
+            display: none; /* Nascondi completamente il contenuto HTML */
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <!-- Indicatore di caricamento sempre visibile -->
+    <div class="loading" id="loading">
+        <div class="loading-message">
+            <p>Generazione PDF in corso, attendere...</p>
+        </div>
+    </div>
+
+    <!-- Contenuto nascosto per la generazione del PDF -->
     <div id="content">
         <div class="header">
             <img src="../img/logo.png" alt="Logo Azienda" class="logo" onerror="this.style.display='none'">
@@ -300,28 +202,28 @@ try {
         
         <table class="summary-table">
             <tr>
-                <th style="width:50%">Tipo di ore</th>
-                <th style="width:50%">Totale</th>
+                <th style="width:50%; text-align:center;">Tipo di ore</th>
+                <th style="width:50%; text-align:center;">Totale</th>
             </tr>
             <tr>
-                <td>Ore Feriali Diurne</td>
-                <td><?php echo decimal_to_time($sommario['feriali_diurne']); ?></td>
+                <td style="text-align:center;">Ore Feriali Diurne</td>
+                <td style="text-align:center;"><?php echo decimal_to_time($sommario['feriali_diurne']); ?></td>
             </tr>
             <tr>
-                <td>Ore Feriali Notturne</td>
-                <td><?php echo decimal_to_time($sommario['feriali_notturne']); ?></td>
+                <td style="text-align:center;">Ore Feriali Notturne</td>
+                <td style="text-align:center;"><?php echo decimal_to_time($sommario['feriali_notturne']); ?></td>
             </tr>
             <tr>
-                <td>Ore Festive Diurne</td>
-                <td><?php echo decimal_to_time($sommario['festive_diurne']); ?></td>
+                <td style="text-align:center;">Ore Festive Diurne</td>
+                <td style="text-align:center;"><?php echo decimal_to_time($sommario['festive_diurne']); ?></td>
             </tr>
             <tr>
-                <td>Ore Festive Notturne</td>
-                <td><?php echo decimal_to_time($sommario['festive_notturne']); ?></td>
+                <td style="text-align:center;">Ore Festive Notturne</td>
+                <td style="text-align:center;"><?php echo decimal_to_time($sommario['festive_notturne']); ?></td>
             </tr>
             <tr class="total-row">
-                <td>TOTALE ORE</td>
-                <td><?php echo decimal_to_time($sommario['totale_ore']); ?></td>
+                <td style="text-align:center;"><strong>TOTALE ORE</strong></td>
+                <td style="text-align:center;"><strong><?php echo decimal_to_time($sommario['totale_ore']); ?></strong></td>
             </tr>
         </table>
         
@@ -334,10 +236,10 @@ try {
                     <th class="col-date">Data Uscita</th>
                     <th class="col-time">Uscita</th>
                     <th class="col-sede">Sede</th>
-                    <th class="col-hours">Fer. D.</th>
-                    <th class="col-hours">Fer. N.</th>
-                    <th class="col-hours">Fest. D.</th>
-                    <th class="col-hours">Fest. N.</th>
+                    <th class="col-hours">Feriali Diurne</th>
+                    <th class="col-hours">Feriali Notturne</th>
+                    <th class="col-hours">Festive Diurne</th>
+                    <th class="col-hours">Festive Notturne</th>
                     <th class="col-hours">Totale</th>
                 </tr>
             </thead>
@@ -375,49 +277,132 @@ try {
     </div>
     
     <script>
-        window.onload = function() {
+        // Avvia immediatamente la generazione del PDF
+        document.addEventListener('DOMContentLoaded', function() {
+            // Per opzione di stampa
             if ("<?php echo $action; ?>" === "print") {
-                window.print();
-                window.onafterprint = function() {
-                    window.close();
-                }
-            } else if ("<?php echo $action; ?>" === "download") {
+                // Mostra il contenuto per la stampa
+                document.getElementById('content').style.display = 'block';
+                document.getElementById('loading').style.display = 'none';
+                
+                // Avvia la stampa
+                setTimeout(function() {
+                    window.print();
+                    window.onafterprint = function() {
+                        window.close();
+                    }
+                }, 500);
+            } else {
+                // Per opzione di download
                 setTimeout(function() {
                     try {
                         const { jsPDF } = window.jspdf;
                         
-                        // Imposta stili CSS globali per migliorare la qualità del report
+                        // Imposta stili CSS globali per migliorare la qualità del report per il PDF
                         const style = document.createElement('style');
                         style.textContent = `
                             #content {
+                                display: block !important;
                                 font-family: Helvetica, Arial, sans-serif;
                                 color: #000000;
+                                font-size: 20pt; /* Dimensione grande per il PDF */
+                                background-color: white;
                             }
-                            #content h1, #content h2 {
+                            h1, h2 {
                                 color: #800020;
+                                font-size: 24pt; /* Titoli più grandi per il PDF */
                             }
-                            #content table {
-                                border-collapse: collapse;
+                            h2 {
+                                font-size: 22pt; /* Sottotitoli per il PDF */
+                                margin-top: 18px;
+                                margin-bottom: 12px;
+                                border-bottom: 1px solid #800020;
+                                padding-bottom: 8px;
                             }
-                            #content th, #content td {
-                                border: 1px solid #000000;
+                            .header {
+                                position: relative;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                margin-bottom: 18px;
+                                border-bottom: 1px solid #800020;
+                                padding-bottom: 12px;
                             }
-                            #content th {
+                            .logo {
+                                height: 60px;
+                                margin-right: 20px;
+                            }
+                            .company-info {
+                                flex-grow: 1;
+                                text-align: right;
+                                font-size: 16pt;
+                                color: #555;
+                            }
+                            table { 
+                                width: 100%; 
+                                border-collapse: collapse; 
+                                margin-bottom: 18px;
+                                font-size: 20pt; /* Tabella per il PDF */
+                                table-layout: fixed;
+                            }
+                            th, td { 
+                                border: 1px solid #ddd; 
+                                padding: 12px 6px; /* Padding per il PDF */
+                                text-align: center;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                line-height: 1.5;
+                            }
+                            th { 
                                 background-color: #800020;
                                 color: white;
+                                font-weight: bold;
+                                font-size: 20pt;
+                            }
+                            .summary-table {
+                                width: 100%;
+                                margin: 0 0 18px 0;
+                                table-layout: auto;
+                                font-size: 20pt;
+                            }
+                            .summary-table th {
+                                text-align: center !important;
+                                padding: 10px;
+                            }
+                            .summary-table td {
+                                text-align: center !important;
+                                font-weight: bold;
+                                padding: 10px;
+                            }
+                            .total-row {
+                                background-color: rgba(128, 0, 32, 0.1);
+                                font-weight: bold;
+                                font-size: 22pt;
+                                color: #800020;
+                            }
+                            .footer {
+                                text-align: center;
+                                margin-top: 18px;
+                                font-size: 16pt; /* Footer più grande */
+                                color: #777;
+                                padding-top: 10px;
+                                border-top: 1px solid #800020;
                             }
                         `;
                         document.head.appendChild(style);
+                        
+                        // Assicuriamoci che il contenuto sia visibile durante la generazione del PDF
+                        document.getElementById('content').style.display = 'block';
                         
                         // Crea un nuovo documento PDF in formato verticale
                         const pdf = new jsPDF('p', 'mm', 'a4');
                         
                         // Imposta font e dimensione
                         pdf.setFont("helvetica");
-                        pdf.setFontSize(14);
+                        pdf.setFontSize(20); /* Dimensione font di base per il PDF */
                         
                         html2canvas(document.getElementById('content'), {
-                            scale: 2,
+                            scale: 2, /* Scala bilanciata */
                             useCORS: true,
                             logging: false,
                             backgroundColor: "#ffffff"
@@ -478,7 +463,7 @@ try {
                     }
                 }, 500);
             }
-        }
+        });
     </script>
 </body>
 </html>
