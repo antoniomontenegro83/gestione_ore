@@ -7,16 +7,28 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f6fefa;
+  
+  /* Sfondo con immagine */
+  background-image: url('../immagini/sfondo_login.jpg');
+  background-size: cover; /* Copre tutto lo schermo */
+  background-position: center center; /* Centra l'immagine */
+  background-repeat: no-repeat; /* Non ripete l'immagine */
+  background-attachment: fixed; /* Sfondo fisso durante scroll */
+  
+  /* Overlay scuro sopra l'immagine per migliorare leggibilità */
+  position: relative;
 }
 
 .login-card {
   min-width: 300px;
   max-width: 400px;
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3); /* Ombra più forte */
+  background-color: rgba(255, 255, 255, 0.3); /* Sfondo semi-trasparente */
+  backdrop-filter: blur(5px); /* Effetto sfocatura dietro la card */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 1;
 }
 
 .login-title {
@@ -24,6 +36,7 @@ body {
   text-align: center;
   color: #333;
   font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .login-form .form-control {

@@ -1,5 +1,5 @@
 /**
- * events.js - Gestione eventi per qualifiche con funzionalità complete
+ * events.js - Gestione eventi per qualifiche con errori corretti
  */
 import qualificheState from './state.js';
 import QualificheUI from './ui.js';
@@ -9,6 +9,8 @@ import { QUALIFICHE_CONFIG } from './config.js';
 
 export const QualificheEvents = {
   setupEventListeners() {
+    console.log('QualificheEvents: Setup event listeners...');
+    
     // Listener per la ricerca
     const searchInput = document.getElementById('qualifica-search');
     if (searchInput) {
@@ -16,18 +18,6 @@ export const QualificheEvents = {
         const searchValue = e.target.value;
         qualificheState.setCurrentFilter(searchValue);
         QualificheUI.renderTable(searchValue);
-      });
-    }
-    
-    // Pulsante di aggiunta qualifica (alternativo al form)
-    const addButton = document.getElementById('addQualificaBtn');
-    if (addButton) {
-      addButton.addEventListener('click', () => {
-        const nomeInput = document.getElementById('qualifica-nome');
-        if (nomeInput) {
-          nomeInput.focus();
-          nomeInput.scrollIntoView({ behavior: 'smooth' });
-        }
       });
     }
     
@@ -74,10 +64,10 @@ export const QualificheEvents = {
     qualificheState.setLoading(true);
     
     try {
-      console.log('Aggiunta qualifica:', nome);
+      console.log('QualificheEvents: Aggiunta qualifica:', nome);
       
       const result = await QualificheAPI.addQualifica(nome);
-      console.log('Risposta server:', result);
+      console.log('QualificheEvents: Risposta server:', result);
       
       if (result && result.success) {
         Notifications.success(QUALIFICHE_CONFIG.MESSAGES.SUCCESS_ADD);
@@ -89,16 +79,19 @@ export const QualificheEvents = {
         };
         qualificheState.addQualifica(newQualifica);
         
-        // Aggiorna l'interfaccia
+        // Aggiorna l'interfaccia COMPLETAMENTE
         QualificheUI.renderTable(qualificheState.getCurrentFilter());
+        QualificheUI.updateQualificheBadges(); // Aggiorna anche i badge
         QualificheUI.clearForm();
         QualificheUI.highlightAddedQualifica(newQualifica.id);
+        
+        console.log('QualificheEvents: Qualifica aggiunta e interfaccia aggiornata');
       } else {
         const errorMsg = result?.error || QUALIFICHE_CONFIG.MESSAGES.ERROR_ADD;
         Notifications.error(errorMsg);
       }
     } catch (error) {
-      console.error('Errore durante l\'aggiunta:', error);
+      console.error('QualificheEvents: Errore durante l\'aggiunta:', error);
       Notifications.error(QUALIFICHE_CONFIG.MESSAGES.CONNECTION_ERROR);
     } finally {
       qualificheState.setLoading(false);
@@ -128,9 +121,10 @@ export const QualificheEvents = {
     qualificheState.setLoading(true);
     
     try {
-      console.log('Modifica qualifica ID:', id, 'Nome:', nome);
+      console.log('QualificheEvents: Modifica qualifica ID:', id, 'Nome:', nome);
       
       const result = await QualificheAPI.updateQualifica({ id, qualifica: nome });
+      console.log('QualificheEvents: Risposta modifica:', result);
       
       if (result && result.success) {
         Notifications.success(QUALIFICHE_CONFIG.MESSAGES.SUCCESS_UPDATE);
@@ -145,14 +139,17 @@ export const QualificheEvents = {
         // Aggiorna lo stato
         qualificheState.updateQualifica({ id, qualifica: nome });
         
-        // Ricarica la tabella
+        // Ricarica COMPLETAMENTE l'interfaccia
         QualificheUI.renderTable(qualificheState.getCurrentFilter());
+        QualificheUI.updateQualificheBadges(); // Aggiorna anche i badge
+        
+        console.log('QualificheEvents: Qualifica modificata e interfaccia aggiornata');
       } else {
         const errorMsg = result?.error || QUALIFICHE_CONFIG.MESSAGES.ERROR_UPDATE;
         Notifications.error(errorMsg);
       }
     } catch (error) {
-      console.error('Errore durante la modifica:', error);
+      console.error('QualificheEvents: Errore durante la modifica:', error);
       Notifications.error(QUALIFICHE_CONFIG.MESSAGES.CONNECTION_ERROR);
     } finally {
       qualificheState.setLoading(false);
@@ -174,9 +171,10 @@ export const QualificheEvents = {
     qualificheState.setLoading(true);
     
     try {
-      console.log('Eliminazione qualifica ID:', idToDelete);
+      console.log('QualificheEvents: Eliminazione qualifica ID:', idToDelete);
       
       const result = await QualificheAPI.deleteQualifica(idToDelete);
+      console.log('QualificheEvents: Risposta eliminazione:', result);
       
       if (result && result.success) {
         Notifications.success(QUALIFICHE_CONFIG.MESSAGES.SUCCESS_DELETE);
@@ -194,7 +192,7 @@ export const QualificheEvents = {
         Notifications.error(errorMsg);
       }
     } catch (error) {
-      console.error('Errore durante l\'eliminazione:', error);
+      console.error('QualificheEvents: Errore durante l\'eliminazione:', error);
       Notifications.error(QUALIFICHE_CONFIG.MESSAGES.CONNECTION_ERROR);
     } finally {
       qualificheState.setLoading(false);

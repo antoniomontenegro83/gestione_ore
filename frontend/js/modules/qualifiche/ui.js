@@ -1,10 +1,9 @@
 /**
- * ui.js - Gestione interfaccia utente per qualifiche con badge avanzati
+ * ui.js - Gestione interfaccia utente per qualifiche ottimizzata
  */
 import { Notifications } from '../../main.js';
 import qualificheState from './state.js';
 import { QUALIFICHE_CONFIG } from './config.js';
-import liveBadges from '../common/live-badge.js';
 
 export const QualificheUI = {
   showLoading() {
@@ -12,7 +11,7 @@ export const QualificheUI = {
     if (tbody) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="5" class="text-center py-4">
+          <td colspan="3" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Caricamento...</span>
             </div>
@@ -28,7 +27,7 @@ export const QualificheUI = {
     if (tbody) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="5" class="text-center text-danger py-4">
+          <td colspan="3" class="text-center text-danger py-4">
             <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
             <p class="mt-2">${message}</p>
           </td>
@@ -52,12 +51,12 @@ export const QualificheUI = {
     }
 
     this.updateCounter(qualificheFiltrate.length);
-    this.updateBadgeCounts();
+    this.updateQualificheBadges();
 
     if (qualificheFiltrate.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="5" class="text-center text-muted py-4">
+          <td colspan="3" class="text-center text-muted py-4">
             ${filter ? QUALIFICHE_CONFIG.MESSAGES.NO_RESULTS : QUALIFICHE_CONFIG.MESSAGES.NO_DATA}
           </td>
         </tr>
@@ -65,40 +64,52 @@ export const QualificheUI = {
       return;
     }
 
-    qualificheFiltrate.forEach((qual, index) => {
-      const row = this.createTableRow(qual, index);
+    qualificheFiltrate.forEach((qual) => {
+      const row = this.createTableRow(qual);
       tbody.appendChild(row);
     });
   },
 
-  createTableRow(qual, index) {
+  createTableRow(qual) {
     const row = document.createElement('tr');
     row.setAttribute('data-qualifica-id', qual.id);
     
-    // Calcola il numero di dipendenti associati (simulato)
-    const dipendentiAssociati = this.getDipendentiPerQualifica(qual.qualifica);
     const badgeColor = this.getColorForQualifica(qual.qualifica);
     
-    row.innerHTML = `
-      <td class="text-center">${qual.id}</td>
-      <td>
-        <span class="badge bg-${badgeColor} me-2">${qual.qualifica}</span>
-        <strong>${qual.qualifica}</strong>
-      </td>
-      <td>
-        <span class="badge bg-info">${dipendentiAssociati} dipendenti</span>
-      </td>
-      <td class="text-center">
-        <button class="btn btn-sm btn-warning me-1" onclick="window.apriModifica(${qual.id})">
-          <i class="bi bi-pencil"></i> Modifica
-        </button>
-      </td>
-      <td class="text-center">
-        <button class="btn btn-sm btn-danger" onclick="window.eliminaQualifica(${qual.id})">
-          <i class="bi bi-trash"></i> Elimina
-        </button>
-      </td>
+    // Creare gli elementi separatamente per gestire meglio gli eventi
+    const qualificaCell = document.createElement('td');
+    qualificaCell.innerHTML = `
+      <span class="badge bg-${badgeColor} me-2">${qual.qualifica}</span>
+      <strong>${qual.qualifica}</strong>
     `;
+    
+    const modificaCell = document.createElement('td');
+    modificaCell.className = 'text-center';
+    const modificaBtn = document.createElement('button');
+    modificaBtn.className = 'btn btn-sm btn-warning';
+    modificaBtn.innerHTML = '<i class="bi bi-pencil"></i> Modifica';
+    modificaBtn.addEventListener('click', () => {
+      if (window.qualificheManager) {
+        window.qualificheManager.apriModifica(qual.id);
+      }
+    });
+    modificaCell.appendChild(modificaBtn);
+    
+    const eliminaCell = document.createElement('td');
+    eliminaCell.className = 'text-center';
+    const eliminaBtn = document.createElement('button');
+    eliminaBtn.className = 'btn btn-sm btn-danger';
+    eliminaBtn.innerHTML = '<i class="bi bi-trash"></i> Elimina';
+    eliminaBtn.addEventListener('click', () => {
+      if (window.qualificheManager) {
+        window.qualificheManager.eliminaQualifica(qual.id);
+      }
+    });
+    eliminaCell.appendChild(eliminaBtn);
+    
+    row.appendChild(qualificaCell);
+    row.appendChild(modificaCell);
+    row.appendChild(eliminaCell);
     
     return row;
   },
@@ -110,123 +121,42 @@ export const QualificheUI = {
     }
   },
 
-  updateBadgeCounts() {
+  updateQualificheBadges() {
     const qualifiche = qualificheState.getQualifiche();
-    const totalCount = qualifiche.length;
+    const badgesContainer = document.getElementById('qualifiche-badges-container');
     
-    // Conta per categoria di qualifica
-    const categorieCounts = this.categorizeQualifiche(qualifiche);
+    if (!badgesContainer) return;
     
-    // Conta dipendenti per qualifica
-    const dipendentiCounts = {};
+    if (qualifiche.length === 0) {
+      badgesContainer.innerHTML = '<span class="text-muted">Nessuna qualifica disponibile</span>';
+      return;
+    }
+    
+    let badgesHtml = '';
     qualifiche.forEach(qual => {
-      dipendentiCounts[qual.qualifica] = this.getDipendentiPerQualifica(qual.qualifica);
+      const color = this.getColorForQualifica(qual.qualifica);
+      badgesHtml += `
+        <span class="badge bg-${color} fs-6 py-2 px-3 qualifica-badge" 
+              data-qualifica="${qual.qualifica}" 
+              style="cursor: pointer;">
+          <i class="bi bi-award me-1"></i>${qual.qualifica}
+        </span>
+      `;
     });
     
-    // Crea/aggiorna container dei badge
-    this.updateBadgeContainer(categorieCounts, dipendentiCounts);
+    badgesContainer.innerHTML = badgesHtml;
     
-    // Attiva l'aggiornamento live dei badge
-    if (!this.liveBadgesStarted) {
-      liveBadges.start();
-      this.liveBadgesStarted = true;
-    }
-  },
-
-  categorizeQualifiche(qualifiche) {
-    const categorie = {
-      'Vigili del Fuoco': 0,
-      'Comandanti': 0,
-      'Specialisti': 0,
-      'Operatori': 0,
-      'Altre': 0
-    };
-    
-    qualifiche.forEach(qual => {
-      const q = qual.qualifica.toUpperCase();
-      if (['VV', 'VE', 'VC', 'VESC', 'VCSC', 'VIGP', 'VIG'].includes(q)) {
-        categorie['Vigili del Fuoco']++;
-      } else if (['CR', 'CQE', 'CS', 'DCS', 'DCSLG', 'DSLG'].includes(q)) {
-        categorie['Comandanti']++;
-      } else if (['NCVFC', 'NMVFC', 'SVFC', 'SCR', 'SCS', 'NCCR'].includes(q)) {
-        categorie['Specialisti']++;
-      } else if (['OPER', 'OPERESC'].includes(q)) {
-        categorie['Operatori']++;
-      } else {
-        categorie['Altre']++;
-      }
+    // Rendi i badge cliccabili per filtrare la tabella
+    badgesContainer.querySelectorAll('.qualifica-badge').forEach(badge => {
+      badge.addEventListener('click', () => {
+        const qualifica = badge.getAttribute('data-qualifica');
+        const searchInput = document.getElementById('qualifica-search');
+        if (searchInput) {
+          searchInput.value = qualifica;
+          this.renderTable(qualifica);
+        }
+      });
     });
-    
-    return categorie;
-  },
-
-  updateBadgeContainer(categorieCounts, dipendentiCounts) {
-    let badgeContainer = document.getElementById('qualificaBadgeContainer');
-    if (!badgeContainer) {
-      const searchContainer = document.querySelector('.search-container');
-      if (searchContainer) {
-        badgeContainer = document.createElement('div');
-        badgeContainer.id = 'qualificaBadgeContainer';
-        badgeContainer.className = 'badge-container mt-3 mb-4';
-        searchContainer.after(badgeContainer);
-      }
-    }
-    
-    if (badgeContainer) {
-      let html = '';
-      
-      // Badge per categorie (SOPRA)
-      html += '<div class="badge-group mb-3">';
-      html += '<h6 class="text-muted mb-2">Categorie</h6>';
-      html += '<div class="d-flex gap-2 flex-wrap">';
-      
-      Object.entries(categorieCounts).forEach(([categoria, count]) => {
-        if (count > 0) {
-          const color = this.getColorForCategoria(categoria);
-          html += `<span class="badge bg-${color} updating" data-live-update="categoria-${categoria}">
-            <i class="bi bi-tags"></i> ${categoria}: ${count}
-          </span>`;
-        }
-      });
-      
-      html += '</div>';
-      html += '</div>';
-      
-      // Badge per qualifiche più utilizzate (SOTTO)
-      html += '<div class="badge-group">';
-      html += '<h6 class="text-muted mb-2">Qualifiche Top</h6>';
-      html += '<div class="d-flex gap-2 flex-wrap">';
-      
-      // Ordina le qualifiche per numero di dipendenti associati
-      const sortedQualifiche = Object.entries(dipendentiCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 8); // Mostra solo le prime 8
-      
-      sortedQualifiche.forEach(([qualifica, count]) => {
-        if (count > 0) {
-          const color = this.getColorForQualifica(qualifica);
-          html += `<span class="badge bg-${color} updating" data-live-update="qualifica-${qualifica}">
-            <i class="bi bi-award"></i> ${qualifica}: ${count}
-          </span>`;
-        }
-      });
-      
-      html += '</div>';
-      html += '</div>';
-      
-      badgeContainer.innerHTML = html;
-    }
-  },
-
-  getColorForCategoria(categoria) {
-    const categoriaColors = {
-      'Vigili del Fuoco': 'primary',
-      'Comandanti': 'danger',
-      'Specialisti': 'success',
-      'Operatori': 'warning',
-      'Altre': 'secondary'
-    };
-    return categoriaColors[categoria] || 'secondary';
   },
 
   getColorForQualifica(qualifica) {
@@ -277,26 +207,6 @@ export const QualificheUI = {
     return qualificaColors[qualifica];
   },
 
-  async getDipendentiPerQualifica(qualifica) {
-    // Chiamata reale all'API per ottenere il conteggio
-    try {
-      const response = await fetch(`../backend_gestione_ore/qualifiche/count-dipendenti.php?qualifica=${encodeURIComponent(qualifica)}`);
-      const result = await response.json();
-      return result.count || 0;
-    } catch (error) {
-      console.warn('Errore nel conteggio dipendenti per qualifica:', error);
-      // Fallback con dati simulati
-      const counts = {
-        'VV': 45, 'VE': 28, 'VC': 32, 'CR': 15, 'CQE': 12,
-        'CS': 18, 'VESC': 22, 'VCSC': 16, 'DSLG': 8, 'DCS': 6,
-        'OPER': 3, 'OPERESC': 2, 'NCCR': 5, 'NCVFC': 7,
-        'NMVFC': 4, 'SVFC': 3, 'SCR': 2, 'SCS': 3,
-        'IA': 4, 'IIE': 2, 'ILGE': 2, 'VIGP': 2, 'VIG': 3
-      };
-      return counts[qualifica] || Math.floor(Math.random() * 10) + 1;
-    }
-  },
-
   populateModifyModal(qualifica) {
     document.getElementById('modificaId').value = qualifica.id;
     document.getElementById('modificaNome').value = qualifica.qualifica || '';
@@ -321,24 +231,16 @@ export const QualificheUI = {
     }
   },
 
-  showFeedback(message, type = 'success') {
-    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-    const iconClass = type === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle';
-    
-    // Cerca un container per i messaggi o crea una notifica toast
-    Notifications[type](message);
-  },
-
   highlightAddedQualifica(qualificaId) {
     setTimeout(() => {
       const row = document.querySelector(`[data-qualifica-id="${qualificaId}"]`);
       if (row) {
         row.classList.add('table-success');
-        row.style.animation = 'fadeInGreen 0.5s ease';
+        row.style.animation = 'fadeInGreen 0.8s ease';
         setTimeout(() => {
           row.classList.remove('table-success');
           row.style.animation = '';
-        }, 2000);
+        }, 2500);
       }
     }, 100);
   },
@@ -348,23 +250,29 @@ export const QualificheUI = {
     if (row) {
       row.style.opacity = '0';
       row.style.transform = 'translateX(-100%)';
-      row.style.transition = 'all 0.3s ease';
+      row.style.transition = 'all 0.4s ease';
       
       setTimeout(() => {
         row.remove();
+        
+        // Aggiorna SUBITO i badge dopo la rimozione
+        this.updateQualificheBadges();
+        this.updateCounter(qualificheState.getQualifiche().length);
         
         // Se la tabella è vuota, mostra il messaggio
         const tbody = document.getElementById('qualifica-table');
         if (tbody && tbody.children.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" class="text-center text-muted py-4">
+              <td colspan="3" class="text-center text-muted py-4">
                 ${QUALIFICHE_CONFIG.MESSAGES.NO_DATA}
               </td>
             </tr>
           `;
         }
-      }, 300);
+        
+        console.log('QualificheUI: Qualifica rimossa e interfaccia aggiornata');
+      }, 400);
     }
   }
 };
