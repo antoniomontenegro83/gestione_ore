@@ -152,20 +152,20 @@ body {
   color: #2c3e50;
 }
 
-/* Stile per la nuova card Convalida Turni */
-.card-validate-shifts {
-  background: linear-gradient(145deg, #ffffff, #f5fff7);
+/* Nuovo stile per la card Gestione Qualifiche */
+.card-manage-qualifiche {
+  background: linear-gradient(145deg, #ffffff, #fefbf6);
 }
 
-.card-validate-shifts::after {
-  background-color: #20c997;
+.card-manage-qualifiche::after {
+  background-color: #fd7e14;
 }
 
-.card-validate-shifts .card-icon {
-  color: #20c997;
+.card-manage-qualifiche .card-icon {
+  color: #fd7e14;
 }
 
-.card-validate-shifts .card-title {
+.card-manage-qualifiche .card-title {
   color: #2c3e50;
 }
 
