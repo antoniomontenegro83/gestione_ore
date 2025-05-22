@@ -1,97 +1,464 @@
-/* frontend/css/qualifiche.css */
-/* Stili specifici per la gestione qualifiche */
+/**
+ * qualifiche.css - Stili per la gestione delle qualifiche (stile dipendenti)
+ */
 
-.qualifiche-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 10px 10px 0 0;
-}
-
-.add-qualifica-form {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.add-qualifica-form input {
-  flex: 1;
+/* Form container */
+.form-container {
+  background-color: #f8f9fa;
   border-radius: 8px;
-  border: 2px solid #e9ecef;
-  padding: 12px 16px;
-  font-size: 14px;
-  transition: all 0.3s ease;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
 }
 
-.add-qualifica-form input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-  outline: none;
-}
-
-.add-qualifica-btn {
-  border-radius: 8px;
+/* Card stili per la gestione qualifiche */
+.card-header.qualifiche-header {
+  background-color: #fef7e0;
+  color: #b8860b;
+  border-bottom: 2px solid #ffd700;
+  position: relative;
   padding: 12px 20px;
+}
+
+/* Badge contatore totale qualifiche */
+.card-header.qualifiche-header .badge {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  font-weight: 500;
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* Animazione per badge in aggiornamento */
+.badge.updating {
+  animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Card stili per la creazione nuova qualifica */
+.card-header.new-qualifica-header {
+  background-color: #d4edda;
+  color: #155724;
+  border-bottom: 2px solid #28a745;
+}
+
+/* Tabella qualifiche - assicura allineamento corretto */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Forza l'allineamento uniforme delle colonne (5 colonne) */
+#qualifica-table-container {
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Definisci larghezze specifiche per ogni colonna (5 colonne) */
+#qualifica-table-container th:nth-child(1),
+#qualifica-table-container td:nth-child(1) { 
+  width: 10%; /* ID */
+}
+
+#qualifica-table-container th:nth-child(2),
+#qualifica-table-container td:nth-child(2) { 
+  width: 30%; /* Qualifica */
+}
+
+#qualifica-table-container th:nth-child(3),
+#qualifica-table-container td:nth-child(3) { 
+  width: 30%; /* Dipendenti Associati */
+}
+
+#qualifica-table-container th:nth-child(4),
+#qualifica-table-container td:nth-child(4) { 
+  width: 15%; /* Modifica */
+  text-align: center;
+}
+
+#qualifica-table-container th:nth-child(5),
+#qualifica-table-container td:nth-child(5) { 
+  width: 15%; /* Elimina */
+  text-align: center;
+}
+
+/* Stili per tabella con header giallo come la card */
+.table-qualifiche thead,
+#qualifica-table-container thead {
+  background-color: #fef7e0 !important;
+  color: #b8860b !important;
+}
+
+#qualifica-table-container.table-primary thead,
+#qualifica-table-container thead.table-primary {
+  --bs-table-bg: #fef7e0 !important;
+  background-color: #fef7e0 !important;
+  color: #b8860b !important;
+}
+
+/* Forza i colori del header della tabella */
+#qualifica-table-container thead tr th {
+  background-color: #fef7e0 !important;
+  color: #b8860b !important;
+  border-color: #ffd700 !important;
   font-weight: 600;
-  background: linear-gradient(135deg, #28a745 0%, #20c947 100%);
-  border: none;
-  transition: all 0.3s ease;
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+/* Stili per le celle del corpo tabella */
+#qualifica-table-container tbody td {
+  padding: 10px 8px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Stili per tabella zebrata */
+.table-qualifiche tbody tr:nth-child(odd),
+#qualifica-table-container tbody tr:nth-child(odd) {
+  background-color: #f8f9fa !important;
+}
+
+.table-qualifiche tbody tr:nth-child(even),
+#qualifica-table-container tbody tr:nth-child(even) {
+  background-color: #ffffff !important;
+}
+
+/* Hover sulle righe */
+.table-qualifiche tbody tr:hover,
+#qualifica-table-container tbody tr:hover {
+  background-color: #fff8dc !important;
+  transition: background-color 0.2s ease;
+}
+
+/* Search container */
+.search-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.search-container .form-control {
+  padding-left: 2.5rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  color: #6c757d;
+}
+
+/* Animazione bottoni azioni */
+.btn-action {
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Input form qualifiche */
+.form-select, .form-control {
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+}
+
+.form-select {
+  padding-right: 2.25rem;
+}
+
+/* Truncate long text in select options */
+select option {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Stili per i bottoni di azione nelle tabelle */
+.table-qualifiche .btn-sm,
+#qualifica-table-container .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
-.add-qualifica-btn:hover {
-  background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-.delete-qualifica-btn {
-  border-radius: 6px;
-  font-size: 12px;
-  padding: 6px 12px;
-  transition: all 0.3s ease;
-}
-
-.delete-qualifica-btn:hover {
+.table-qualifiche .btn-sm:hover,
+#qualifica-table-container .btn-sm:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-#qualifiche-list .list-group-item {
-  border-radius: 8px;
-  margin-bottom: 8px;
-  border: 1px solid #e9ecef;
-  transition: all 0.3s ease;
+/* Margine tra bottoni */
+.btn-sm.me-1 {
+  margin-right: 0.25rem !important;
 }
 
-#qualifiche-list .list-group-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+/* Icone nei bottoni */
+.btn-sm .bi {
+  font-size: 0.875rem;
 }
 
-.qualifica-nome {
+/* Stati delle righe della tabella */
+.table-qualifiche tbody tr.editing,
+#qualifica-table-container tbody tr.editing {
+  background-color: #fff8dc !important;
+}
+
+/* Badge contatore con posizionamento assoluto */
+.badge {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
   font-weight: 500;
-  color: #2c3e50;
 }
 
-/* Animazioni per aggiunta/rimozione */
-.list-group-item-success {
-  background-color: #d1e7dd !important;
-  border-color: #badbcc !important;
+/* Badge nella tabella - assicura che non tocchi i bordi */
+.badge-status {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
 }
 
-/* Responsive design */
+.badge-status.active {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-status.inactive {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Badge per statistiche qualifiche */
+.badge-container {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.badge-group {
+  margin-bottom: 1rem;
+}
+
+.badge-group:last-child {
+  margin-bottom: 0;
+}
+
+.badge-group h6 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Stili per il modale di modifica */
+#modaleModifica .modal-header {
+  background-color: #ffc107;
+  color: #000;
+  border-bottom: none;
+}
+
+#modaleModifica .modal-title {
+  font-weight: 600;
+}
+
+#modaleModifica .modal-footer {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Stili per il modale di conferma eliminazione */
+#confirmDeleteModal .modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: none;
+}
+
+#confirmDeleteModal .modal-body {
+  padding: 1.5rem;
+  background-color: #fdf6f6;
+}
+
+#confirmDeleteModal .btn-close-white {
+  filter: brightness(0) invert(1);
+}
+
+#deleteQualificaName {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* Animazione per il modale di conferma */
+#confirmDeleteModal .modal-content {
+  animation: slideInDown 0.3s ease-out;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Stili per le icone di stato */
+.bi-exclamation-triangle {
+  color: #ffc107;
+}
+
+.bi-info-circle {
+  color: #17a2b8;
+}
+
+/* Stili responsive */
 @media (max-width: 768px) {
-  .add-qualifica-form {
-    flex-direction: column;
+  /* Adatta il badge per mobile */
+  .card-header.qualifiche-header .badge {
+    position: static;
+    transform: none;
+    display: block;
+    margin-top: 10px;
+    width: fit-content;
   }
   
-  .add-qualifica-form input,
-  .add-qualifica-btn {
-    width: 100%;
+  /* Nascondi alcune colonne su mobile */
+  #qualifica-table-container th:nth-child(1),
+  #qualifica-table-container td:nth-child(1),
+  #qualifica-table-container th:nth-child(3),
+  #qualifica-table-container td:nth-child(3) {
+    display: none;
   }
   
-  .delete-qualifica-btn {
-    font-size: 11px;
-    padding: 4px 8px;
+  /* Ridistribuisci le larghezze delle colonne visibili */
+  #qualifica-table-container th:nth-child(2),
+  #qualifica-table-container td:nth-child(2) { 
+    width: 50%; /* Qualifica */
+  }
+  
+  #qualifica-table-container th:nth-child(4),
+  #qualifica-table-container td:nth-child(4) { 
+    width: 25%; /* Modifica */
+  }
+  
+  #qualifica-table-container th:nth-child(5),
+  #qualifica-table-container td:nth-child(5) { 
+    width: 25%; /* Elimina */
+  }
+  
+  .search-container .form-control {
+    font-size: 16px; /* Previene lo zoom su iOS */
+  }
+  
+  .table-responsive {
+    border: none;
+  }
+  
+  .table-qualifiche,
+  #qualifica-table-container {
+    font-size: 0.875rem;
+  }
+  
+  .table-qualifiche th,
+  .table-qualifiche td,
+  #qualifica-table-container th,
+  #qualifica-table-container td {
+    padding: 8px 5px;
+  }
+  
+  .btn-sm {
+    padding: 0.2rem 0.4rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .btn-sm .bi {
+    font-size: 0.75rem;
+  }
+}
+
+/* Stili per i messaggi di errore/successo */
+.alert-floating {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1050;
+  min-width: 300px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Stili per il loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Miglioramenti per l'accessibilità */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Stili per stampa */
+@media print {
+  .navbar,
+  .btn,
+  .search-container,
+  .modal {
+    display: none !important;
+  }
+  
+  .table-qualifiche,
+  #qualifica-table-container {
+    border: 1px solid #000;
+  }
+  
+  .table-qualifiche th,
+  .table-qualifiche td,
+  #qualifica-table-container th,
+  #qualifica-table-container td {
+    border: 1px solid #000;
   }
 }
