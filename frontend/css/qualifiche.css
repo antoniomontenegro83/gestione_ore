@@ -1,0 +1,97 @@
+/* frontend/css/qualifiche.css */
+/* Stili specifici per la gestione qualifiche */
+
+.qualifiche-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 10px 10px 0 0;
+}
+
+.add-qualifica-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.add-qualifica-form input {
+  flex: 1;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.add-qualifica-form input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.add-qualifica-btn {
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #28a745 0%, #20c947 100%);
+  border: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.add-qualifica-btn:hover {
+  background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.delete-qualifica-btn {
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+}
+
+.delete-qualifica-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+#qualifiche-list .list-group-item {
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+#qualifiche-list .list-group-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.qualifica-nome {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* Animazioni per aggiunta/rimozione */
+.list-group-item-success {
+  background-color: #d1e7dd !important;
+  border-color: #badbcc !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .add-qualifica-form {
+    flex-direction: column;
+  }
+  
+  .add-qualifica-form input,
+  .add-qualifica-btn {
+    width: 100%;
+  }
+  
+  .delete-qualifica-btn {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}

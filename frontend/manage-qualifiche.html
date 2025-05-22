@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestione Qualifiche</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="css/base.css" rel="stylesheet" />
+  <link href="css/qualifiche.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Barra di navigazione -->
+  <nav class="navbar navbar-dark">
+    <div class="container-fluid">
+      <div class="ms-auto">
+        <button id="logoutBtn" class="btn btn-outline-light btn-sm">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Badge ruolo utente -->
+  <div class="user-role-badge">
+    Ruolo: <span id="userRoleDisplay">user</span>
+  </div>
+
+  <div class="container">
+    <!-- Spazio ridotto tra navbar e contenuto -->
+    <div class="action-bar">
+      <div></div> <!-- Elemento vuoto per mantenere il layout flex -->
+      <a href="dashboard.html" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Torna alla Dashboard
+      </a>
+    </div>
+    
+    <div class="card shadow-sm">
+      <div class="card-header qualifiche-header">
+        <h5 class="mb-0">Gestione Qualifiche</h5>
+      </div>
+      <div class="card-body">
+        <!-- Opzionale: Campo di ricerca -->
+        <div class="mb-4">
+          <input type="text" id="qualifica-search" class="form-control" placeholder="Cerca qualifica...">
+        </div>
+        
+        <h4 class="mb-3">Qualifiche Esistenti</h4>
+        <ul id="qualifiche-list" class="list-group mb-4"></ul>
+
+        <h4 class="mb-3">Aggiungi Nuova Qualifica</h4>
+        <form id="add-qualifica-form" class="add-qualifica-form">
+          <input type="text" id="qualifica-nome" class="form-control" placeholder="Nome qualifica" required>
+          <button type="submit" class="btn btn-success add-qualifica-btn">
+            <i class="bi bi-plus-circle"></i> Aggiungi
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script modulari -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/auth-common.js"></script>
+  <script type="module" src="js/manage-qualifiche.js"></script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+/**
+ * dashboard.css - Stili moderni e professionali per la dashboard
+ */
+
+/* Stile generale pagina */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Container con spaziatura ottimizzata - ridotto per spostare le card più in alto */
+.container {
+  padding-top: 0.8rem; 
+  padding-bottom: 2.5rem;
+}
+
+/* Riduzione spazio dopo la navbar - ridotto per spostare le card più in alto */
+.container.mt-5 {
+  margin-top: 1.5rem !important;
+}
+
+/* Barra di navigazione minimalista */
+.navbar {
+  height: 60px;
+  background-color: #800020;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ======= NUOVI STILI PER CARDS MODERNE ======= */
+.card {
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.2rem;  /* Ridotto da 1.5rem per compattare verticalmente */
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+/* Effetto hover elegante */
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Contenuto card con padding migliorato */
+.card-body {
+  padding: 1.8rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 130px;
+  z-index: 2;
+}
+
+/* Icone moderne e più grandi */
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover .card-icon {
+  transform: scale(1.15);
+}
+
+/* Titoli con font weight ottimizzato */
+.card-title {
+  font-weight: 600;
+  font-size: 1.15rem;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Rimuovi linea sotto i titoli e sostituisci con bordo laterale */
+.card-title::after {
+  display: none;
+}
+
+/* Bordo sinistro più sottile e elegante */
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  transition: all 0.3s ease;
+}
+
+/* Aggiungi bordo superiore al posto di quello laterale */
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* Effetto scintillio nell'angolo superiore */
+.card .shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.4);
+  transform: rotate(45deg) translate(-60px, -10px);
+  transition: all 0.4s ease;
+}
+
+.card:hover .shine {
+  transform: rotate(45deg) translate(120px, -30px);
+}
+
+/* Nuovi stili per i temi delle cards */
+.card-new-employee {
+  background: linear-gradient(145deg, #ffffff, #f5f9f7);
+}
+
+.card-new-employee::after {
+  background-color: #28a745;
+}
+
+.card-new-employee .card-icon {
+  color: #28a745;
+}
+
+.card-new-employee .card-title {
+  color: #2c3e50;
+}
+
+.card-time-entry {
+  background: linear-gradient(145deg, #ffffff, #f5f8ff);
+}
+
+.card-time-entry::after {
+  background-color: #0d6efd;
+}
+
+.card-time-entry .card-icon {
+  color: #0d6efd;
+}
+
+.card-time-entry .card-title {
+  color: #2c3e50;
+}
+
+/* Stile per la nuova card Convalida Turni */
+.card-validate-shifts {
+  background: linear-gradient(145deg, #ffffff, #f5fff7);
+}
+
+.card-validate-shifts::after {
+  background-color: #20c997;
+}
+
+.card-validate-shifts .card-icon {
+  color: #20c997;
+}
+
+.card-validate-shifts .card-title {
+  color: #2c3e50;
+}
+
+.card-edit-employees {
+  background: linear-gradient(145deg, #ffffff, #fff9f5);
+}
+
+.card-edit-employees::after {
+  background-color: #ff8c00;
+}
+
+.card-edit-employees .card-icon {
+  color: #ff8c00;
+}
+
+.card-edit-employees .card-title {
+  color: #2c3e50;
+}
+
+.card-shifts-management {
+  background: linear-gradient(145deg, #ffffff, #f5f9f7);
+}
+
+.card-shifts-management::after {
+  background-color: #198754;
+}
+
+.card-shifts-management .card-icon {
+  color: #198754;
+}
+
+.card-shifts-management .card-title {
+  color: #2c3e50;
+}
+
+.card-manage-sedi {
+  background: linear-gradient(145deg, #ffffff, #f5fbfd);
+}
+
+.card-manage-sedi::after {
+  background-color: #0dcaf0;
+}
+
+.card-manage-sedi .card-icon {
+  color: #0dcaf0;
+}
+
+.card-manage-sedi .card-title {
+  color: #2c3e50;
+}
+
+.card-privileges {
+  background: linear-gradient(145deg, #ffffff, #fff5f5);
+}
+
+.card-privileges::after {
+  background-color: #dc3545;
+}
+
+.card-privileges .card-icon {
+  color: #dc3545;
+}
+
+.card-privileges .card-title {
+  color: #2c3e50;
+}
+
+.card-report-ore {
+  background: linear-gradient(145deg, #ffffff, #f8f6ff) !important;
+}
+
+.card-report-ore::after {
+  background-color: #7b68ee !important;
+}
+
+.card-report-ore .card-icon {
+  color: #7b68ee !important;
+}
+
+.card-report-ore .card-title {
+  color: #2c3e50 !important;
+}
+
+/* Spaziatura tra le righe - ridotta per compattare verticalmente */
+.row {
+  margin-bottom: 1rem;
+}
+
+/* Spaziatura prima riga - ridotta per spostare le card più in alto */
+.row:first-of-type {
+  margin-top: 0.5rem;
+}
+
+/* Logout button moderno */
+.navbar .btn-outline-light {
+  border-width: 2px;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.navbar .btn-outline-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Media query per responsività */
+@media (max-width: 992px) {
+  .card-body {
+    min-height: 120px;
+    padding: 1.5rem 1rem;
+  }
+  
+  .card-icon {
+    font-size: 1.8rem;
+  }
+  
+  .container.mt-5 {
+    margin-top: 1.2rem !important; /* Ridotto per mobile */
+  }
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    min-height: 100px;
+    padding: 1.2rem 0.8rem;
+  }
+  
+  .card-icon {
+    font-size: 1.6rem;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+  }
+  
+  .container {
+    padding-top: 0.7rem; /* Ridotto per mobile */
+  }
+  
+  .container.mt-5 {
+    margin-top: 0.8rem !important; /* Ridotto per mobile */
+  }
+}

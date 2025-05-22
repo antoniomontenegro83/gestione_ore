@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="css/base.css" rel="stylesheet" />
+  <link href="css/dashboard.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar navbar-dark">
+    <div class="container-fluid">
+      <div class="ms-auto">
+        <button id="logoutBtn" class="btn btn-outline-light btn-sm">Logout</button>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Badge ruolo utente -->
+  <div class="user-role-badge">
+    Ruolo: <span id="userRoleDisplay">user</span>
+  </div>
+  
+  <div class="container mt-5">
+    <div class="row justify-content-center g-4">
+      <div class="col-md-3">
+        <a href="new-dipendenti.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-new-employee">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-person-plus card-icon"></i>
+              <h5 class="card-title">Nuovo Dipendente</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="time-entry.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-time-entry">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-calendar-plus card-icon"></i>
+              <h5 class="card-title">Inserisci Turni</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="convalida-turni.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-validate-shifts">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-check-circle card-icon"></i>
+              <h5 class="card-title">Convalida Turni</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="row justify-content-center g-4">
+      <div class="col-md-3">
+        <a href="edit-dipendenti.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-edit-employees">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-people card-icon"></i>
+              <h5 class="card-title">Gestione Dipendenti</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="management-turni.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-shifts-management">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-calendar-week card-icon"></i>
+              <h5 class="card-title">Gestione Turni</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="report-ore.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-report-ore">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-bar-chart card-icon"></i>
+              <h5 class="card-title">Report Ore</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="row justify-content-center g-4">
+      <div class="col-md-3">
+        <a href="manage-sedi.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-manage-sedi">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-building-fill card-icon"></i>
+              <h5 class="card-title">Gestione Sedi</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3 d-none" id="card-privilegi">
+        <a href="users-privileges.html" class="text-decoration-none">
+          <div class="card text-center shadow-sm card-privileges">
+            <div class="shine"></div>
+            <div class="card-body">
+              <i class="bi bi-shield-lock card-icon"></i>
+              <h5 class="card-title">Gestione Privilegi</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script modulari -->
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/auth-common.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

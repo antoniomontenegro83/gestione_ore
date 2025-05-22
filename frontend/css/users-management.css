@@ -1,0 +1,256 @@
+/* Aggiunte a users-management.css per la versione modularizzata */
+/**
+ * users-management.css - Stili per la gestione degli utenti e privilegi
+ */
+
+/* Badge contatore */
+#totalUsersBadge {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* Campo ricerca */
+#user-search {
+  padding-left: 2.5rem;
+  position: relative;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Badge ruoli */
+.badge {
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.badge.bg-secondary { background-color: #6c757d !important; }
+.badge.bg-primary { background-color: #0d6efd !important; }
+.badge.bg-warning { background-color: #ffc107 !important; color: #000 !important; }
+.badge.bg-danger { background-color: #dc3545 !important; }
+
+/* Tabella */
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+  cursor: pointer;
+}
+
+.table-header {
+  background-color: #800020;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Animazione per righe aggiunte */
+.table-success {
+  background-color: #d1e7dd !important;
+  animation: fadeInGreen 0.5s ease;
+}
+
+@keyframes fadeInGreen {
+  from {
+    background-color: #a3cfbb;
+    transform: translateX(-10px);
+  }
+  to {
+    background-color: #d1e7dd;
+    transform: translateX(0);
+  }
+}
+
+/* Form container migliorato */
+.form-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-top: 2rem;
+  transition: all 0.3s ease;
+}
+
+.form-container:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Pulsanti azioni nella tabella */
+.table .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  margin: 0 0.125rem;
+}
+
+.table .btn-sm i {
+  font-size: 0.875rem;
+  margin-right: 0.25rem;
+}
+
+/* Modale conferma eliminazione */
+#confirmDeleteUserModal .modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: none;
+}
+
+#confirmDeleteUserModal .modal-body {
+  padding: 1.5rem;
+  background-color: #fff5f5;
+}
+
+#confirmDeleteUserModal #deleteUserName {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+#confirmDeleteUserModal #deleteWarning p {
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin: 0;
+}
+
+#confirmDeleteUserModal .text-danger i,
+#confirmDeleteUserModal .text-warning i {
+  font-size: 1.25rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+/* Alert container per notifiche */
+#alert-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1050;
+  max-width: 350px;
+}
+
+#alert-container .alert {
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Validazione form */
+.form-control:invalid:not(:placeholder-shown) {
+  border-color: #dc3545;
+}
+
+.form-control:valid:not(:placeholder-shown) {
+  border-color: #198754;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  #totalUsersBadge {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .table {
+    font-size: 0.875rem;
+  }
+  
+  .table .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .form-container {
+    padding: 1rem;
+  }
+  
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  #user-search {
+    font-size: 16px; /* Previene zoom su iOS */
+  }
+}
+
+/* Transizioni smooth */
+* {
+  transition: color 0.15s ease-in-out,
+              background-color 0.15s ease-in-out,
+              border-color 0.15s ease-in-out,
+              box-shadow 0.15s ease-in-out,
+              transform 0.15s ease-in-out;
+}
+
+/* Accessibilità */
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.loading {
+  position: relative;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Badge counts in search area */
+.badge-count-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Form hints */
+.form-text {
+  color: #6c757d;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Username validation visual feedback */
+#username:valid:not(:placeholder-shown) ~ .valid-feedback {
+  display: block;
+}
+
+#username:invalid:not(:placeholder-shown) ~ .invalid-feedback {
+  display: block;
+}
