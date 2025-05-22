@@ -1,6 +1,5 @@
-// frontend/js/modules/qualifiche/index.js
 /**
- * index.js - Entry point per il modulo qualifiche
+ * index.js - Entry point per il modulo qualifiche completo
  */
 import { Auth, Notifications } from '../../main.js';
 import qualificheState from './state.js';
@@ -20,7 +19,7 @@ class QualificheManager {
   async init() {
     console.log("Inizializzazione modulo qualifiche...");
     
-    // Verifica autenticazione e configurazione
+    // Verifica autenticazione e autorizzazione
     if (!this.checkAuth()) return;
     
     try {
@@ -30,6 +29,8 @@ class QualificheManager {
       // Configura gli event listener
       this.events.setupEventListeners();
       
+      // Render iniziale
+      this.ui.renderTable();
     } catch (error) {
       console.error("Errore nell'inizializzazione:", error);
       Notifications.error("Errore durante l'inizializzazione");
@@ -68,7 +69,7 @@ class QualificheManager {
       qualifiche.sort((a, b) => a.qualifica.localeCompare(b.qualifica));
       
       this.state.setQualifiche(qualifiche);
-      this.ui.renderList();
+      this.ui.renderTable();
       
     } catch (error) {
       this.ui.showError("Errore nel caricamento delle qualifiche");
@@ -79,6 +80,22 @@ class QualificheManager {
   }
 
   // Metodi pubblici per l'interfaccia globale
+  apriModifica(id) {
+    console.log("Apertura modifica per qualifica ID:", id);
+    
+    const qualifica = this.state.findQualificaById(id);
+    if (!qualifica) {
+      Notifications.error("Qualifica non trovata");
+      return;
+    }
+    
+    this.ui.populateModifyModal(qualifica);
+    
+    // Apri il modale
+    const modaleModifica = new bootstrap.Modal(document.getElementById('modaleModifica'));
+    modaleModifica.show();
+  }
+
   eliminaQualifica(id) {
     const qualifica = this.state.findQualificaById(id);
     if (!qualifica) {
@@ -90,52 +107,37 @@ class QualificheManager {
     this.ui.populateDeleteModal(qualifica);
     
     // Mostra il modale di conferma
-    let confirmModal = document.getElementById('confirmDeleteQualificaModal');
-    if (!confirmModal) {
-      // Crea il modale se non esiste
-      this.createDeleteModal();
-      confirmModal = document.getElementById('confirmDeleteQualificaModal');
-    }
-    
-    const modalInstance = new bootstrap.Modal(confirmModal);
-    modalInstance.show();
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+    confirmModal.show();
   }
 
-  createDeleteModal() {
-    const modalHTML = `
-      <div class="modal fade" id="confirmDeleteQualificaModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-              <h5 class="modal-title">
-                <i class="bi bi-exclamation-triangle me-2"></i>Conferma Eliminazione
-              </h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <p class="mb-0">Sei sicuro di voler eliminare la qualifica <strong id="deleteQualificaName"></strong>?</p>
-              <p class="text-danger mb-0 mt-2">
-                <i class="bi bi-info-circle me-1"></i>${QUALIFICHE_CONFIG.MESSAGES.DELETE_WARNING}
-              </p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-              <button type="button" class="btn btn-danger" id="confirmDeleteQualificaBtn">
-                <i class="bi bi-trash me-1"></i>Elimina
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+  // Metodo per ricaricare i dati (utile per refresh)
+  async reload() {
+    await this.loadQualifiche();
+  }
+
+  // Metodo per ottenere le statistiche
+  getStats() {
+    const qualifiche = this.state.getQualifiche();
+    return {
+      total: qualifiche.length,
+      filtered: this.state.getFilteredQualifiche(this.state.getCurrentFilter()).length,
+      mostUsed: this.getMostUsedQualifiche(5)
+    };
+  }
+
+  getMostUsedQualifiche(limit = 5) {
+    const qualifiche = this.state.getQualifiche();
     
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    // Simula il conteggio dei dipendenti per qualifica
+    const withCounts = qualifiche.map(q => ({
+      ...q,
+      dipendentiCount: this.ui.getDipendentiPerQualifica(q.qualifica)
+    }));
     
-    // Aggiungi l'event listener al pulsante di conferma
-    const confirmBtn = document.getElementById('confirmDeleteQualificaBtn');
-    if (confirmBtn) {
-      confirmBtn.addEventListener('click', () => this.events.handleConfirmDelete());
-    }
+    return withCounts
+      .sort((a, b) => b.dipendentiCount - a.dipendentiCount)
+      .slice(0, limit);
   }
 }
 
@@ -152,7 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Esponi le funzioni globalmente per compatibilità con onclick nell'HTML
 if (typeof window !== 'undefined') {
+  window.qualificheManager = qualificheManager;
+  window.apriModifica = (id) => qualificheManager.apriModifica(id);
   window.eliminaQualifica = (id) => qualificheManager.eliminaQualifica(id);
+  
+  // Funzioni di utilità globali
+  window.reloadQualifiche = () => qualificheManager.reload();
+  window.getQualificheStats = () => qualificheManager.getStats();
   
   console.log("Modulo qualifiche caricato e funzioni esposte globalmente");
 }
