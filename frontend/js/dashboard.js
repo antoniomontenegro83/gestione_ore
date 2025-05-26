@@ -1,8 +1,9 @@
 /**
- * dashboard.js - Logica per la dashboard principale con protezione ruoli
+ * dashboard.js - Logica per la dashboard principale con modulo backup
  */
 import { Auth, Notifications } from './main.js';
 import AuthCommon from './auth-common.js';
+import backupManager from './modules/backup/index.js';
 
 // Funzione principale che viene eseguita al caricamento della pagina
 document.addEventListener('DOMContentLoaded', function() {
@@ -85,7 +86,42 @@ function setupCardProtection() {
   });
 }
 
+/**
+ * Esegue il backup del database tramite il modulo backup
+ */
+async function executeBackup() {
+  console.log("Dashboard: Delegando backup al modulo dedicato...");
+  await backupManager.executeBackup();
+}
+
+/**
+ * Ottiene lo stato del backup
+ */
+function getBackupStatus() {
+  return backupManager.getBackupStatus();
+}
+
+/**
+ * Attiva/disattiva backup automatico
+ */
+function toggleAutoBackup(enabled) {
+  backupManager.toggleAutoBackup(enabled);
+  
+  const status = enabled ? 'abilitato' : 'disabilitato';
+  Notifications.info(`Backup automatico ${status}`);
+  
+  console.log(`Dashboard: Backup automatico ${status}`);
+}
+
+// Esponi le funzioni globalmente
+window.executeBackup = executeBackup;
+window.getBackupStatus = getBackupStatus;
+window.toggleAutoBackup = toggleAutoBackup;
+
 // Esporta per uso esterno se necessario
 export default {
-  setupCardProtection
+  setupCardProtection,
+  executeBackup,
+  getBackupStatus,
+  toggleAutoBackup
 };

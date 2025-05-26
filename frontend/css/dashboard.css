@@ -1,97 +1,128 @@
 /**
- * dashboard.css - Stili moderni e professionali per la dashboard
+ * dashboard.css - Stili compatti per dashboard con margini perfettamente centrati
  */
 
 /* Stile generale pagina */
 body {
   background-color: #f8f9fa;
   font-family: 'Inter', sans-serif;
+  height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Container con spaziatura ottimizzata - ridotto per spostare le card più in alto */
-.container {
-  padding-top: 0.8rem; 
-  padding-bottom: 2.5rem;
+/* Container centrato con margini uguali */
+.container-fluid {
+  padding-top: 0.2rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: calc(100vh - 50px); /* Aggiustato per navbar 50px */
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Riduzione spazio dopo la navbar - ridotto per spostare le card più in alto */
-.container.mt-5 {
-  margin-top: 1.5rem !important;
+/* Container specifico per il contenuto dashboard (non navbar) */
+.container-fluid.mt-2 {
+  margin-top: 0.3rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-/* Barra di navigazione minimalista */
+/* Barra di navigazione compatta */
 .navbar {
-  height: 60px;
+  height: 50px;
   background-color: #800020;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.25rem 1rem;
+  position: relative;
+  z-index: 1040; /* Sopra al badge utente */
 }
 
-/* ======= NUOVI STILI PER CARDS MODERNE ======= */
+/* Navbar container per il logout */
+.navbar .container-fluid {
+  padding: 0;
+  max-width: none;
+  margin: 0;
+  height: auto;
+}
+
+/* Badge ruolo utente sempre visibile */
+.user-role-badge {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  margin: 0;
+  padding: 0.3rem 0.8rem;
+  border-radius: 25px;
+  background-color: #0d6efd;
+  color: white;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 1050; /* Stesso livello del logout per essere sempre visibile */
+}
+
+/* ======= CARDS DIMENSIONI ESATTE 329.69px × 162.85px ======= */
 .card {
   border: none;
   border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin-bottom: 1.2rem;  /* Ridotto da 1.5rem per compattare verticalmente */
+  margin-bottom: 0;
   position: relative;
   overflow: hidden;
   background-color: #fff;
+  width: 329.69px !important;
+  height: 162.85px !important;
+  min-width: 329.69px !important;
+  min-height: 162.85px !important;
+  max-width: 329.69px !important;
+  max-height: 162.85px !important;
+  flex-shrink: 0;
+  flex-grow: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Effetto hover elegante */
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* Contenuto card con padding migliorato */
+/* Contenuto card con proporzioni perfette */
 .card-body {
-  padding: 1.8rem 1.2rem;
+  padding: 1.2rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 130px;
+  min-height: auto;
+  height: 100%;
   z-index: 2;
 }
 
-/* Icone moderne e più grandi */
+/* Icone proporzionate alle nuove dimensioni */
 .card-icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  margin-bottom: 0.8rem;
   transition: all 0.3s ease;
 }
 
 .card:hover .card-icon {
-  transform: scale(1.15);
+  transform: scale(1.12);
 }
 
-/* Titoli con font weight ottimizzato */
+/* Titoli proporzionati */
 .card-title {
   font-weight: 600;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   margin: 0;
   text-align: center;
   letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
-/* Rimuovi linea sotto i titoli e sostituisci con bordo laterale */
-.card-title::after {
-  display: none;
-}
-
-/* Bordo sinistro più sottile e elegante */
-.card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 4px;
-  transition: all 0.3s ease;
-}
-
-/* Aggiungi bordo superiore al posto di quello laterale */
+/* Bordo superiore proporzionato */
 .card::after {
   content: '';
   position: absolute;
@@ -103,7 +134,7 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Effetto scintillio nell'angolo superiore */
+/* Effetto scintillio proporzionato */
 .card .shine {
   position: absolute;
   top: 0;
@@ -111,205 +142,251 @@ body {
   width: 50px;
   height: 50px;
   background: rgba(255, 255, 255, 0.4);
-  transform: rotate(45deg) translate(-60px, -10px);
+  transform: rotate(45deg) translate(-60px, -15px);
   transition: all 0.4s ease;
 }
 
 .card:hover .shine {
-  transform: rotate(45deg) translate(120px, -30px);
+  transform: rotate(45deg) translate(350px, -25px);
 }
 
-/* Nuovi stili per i temi delle cards */
+/* Righe con spaziatura mantenuta e centrate */
+.row.g-2 {
+  --bs-gutter-x: 1rem; /* Aumentato per più spazio tra le card */
+  --bs-gutter-y: 1rem;
+  margin-left: calc(-0.5rem);
+  margin-right: calc(-0.5rem);
+  justify-content: center; /* Centra le colonne nella riga */
+}
+
+.row.mb-2 {
+  margin-bottom: 1rem !important;
+}
+
+/* Colonne con spaziatura corretta */
+.col-md-4 {
+  flex: 0 0 auto;
+  width: auto; /* Lascia che la card determini la larghezza */
+  display: flex;
+  justify-content: center;
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  margin-bottom: var(--bs-gutter-y);
+}
+
+/* Assicura che le righe siano centrate mantenendo lo spazio */
+@media (min-width: 768px) {
+  .row {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+  }
+  
+  .col-md-4 {
+    max-width: calc(329.69px + 1rem); /* Larghezza card + padding */
+    flex-basis: calc(329.69px + 1rem);
+  }
+}
+
+/* Stili per i temi delle cards (colori invariati ma ottimizzati) */
 .card-new-employee {
-  background: linear-gradient(145deg, #ffffff, #f5f9f7);
+  background: linear-gradient(145deg, #ffffff, #f8fdf9);
 }
-
 .card-new-employee::after {
   background-color: #28a745;
 }
-
 .card-new-employee .card-icon {
   color: #28a745;
 }
 
-.card-new-employee .card-title {
-  color: #2c3e50;
-}
-
 .card-time-entry {
-  background: linear-gradient(145deg, #ffffff, #f5f8ff);
+  background: linear-gradient(145deg, #ffffff, #f8fbff);
 }
-
 .card-time-entry::after {
   background-color: #0d6efd;
 }
-
 .card-time-entry .card-icon {
   color: #0d6efd;
 }
 
-.card-time-entry .card-title {
-  color: #2c3e50;
+.card-backup {
+  background: linear-gradient(145deg, #ffffff, #f0f8ff);
 }
-
-/* Nuovo stile per la card Gestione Qualifiche */
-.card-manage-qualifiche {
-  background: linear-gradient(145deg, #ffffff, #fefbf6);
+.card-backup::after {
+  background-color: #17a2b8;
 }
-
-.card-manage-qualifiche::after {
-  background-color: #fd7e14;
-}
-
-.card-manage-qualifiche .card-icon {
-  color: #fd7e14;
-}
-
-.card-manage-qualifiche .card-title {
-  color: #2c3e50;
+.card-backup .card-icon {
+  color: #17a2b8;
 }
 
 .card-edit-employees {
-  background: linear-gradient(145deg, #ffffff, #fff9f5);
+  background: linear-gradient(145deg, #ffffff, #fffaf8);
 }
-
 .card-edit-employees::after {
   background-color: #ff8c00;
 }
-
 .card-edit-employees .card-icon {
   color: #ff8c00;
 }
 
-.card-edit-employees .card-title {
-  color: #2c3e50;
-}
-
 .card-shifts-management {
-  background: linear-gradient(145deg, #ffffff, #f5f9f7);
+  background: linear-gradient(145deg, #ffffff, #f8fdf9);
 }
-
 .card-shifts-management::after {
   background-color: #198754;
 }
-
 .card-shifts-management .card-icon {
   color: #198754;
 }
 
-.card-shifts-management .card-title {
-  color: #2c3e50;
+.card-manage-qualifiche {
+  background: linear-gradient(145deg, #ffffff, #fffcf8);
+}
+.card-manage-qualifiche::after {
+  background-color: #fd7e14;
+}
+.card-manage-qualifiche .card-icon {
+  color: #fd7e14;
 }
 
 .card-manage-sedi {
-  background: linear-gradient(145deg, #ffffff, #f5fbfd);
+  background: linear-gradient(145deg, #ffffff, #f8fcff);
 }
-
 .card-manage-sedi::after {
   background-color: #0dcaf0;
 }
-
 .card-manage-sedi .card-icon {
   color: #0dcaf0;
 }
 
-.card-manage-sedi .card-title {
-  color: #2c3e50;
+.card-report-ore {
+  background: linear-gradient(145deg, #ffffff, #fafaff);
+}
+.card-report-ore::after {
+  background-color: #7b68ee;
+}
+.card-report-ore .card-icon {
+  color: #7b68ee;
 }
 
 .card-privileges {
-  background: linear-gradient(145deg, #ffffff, #fff5f5);
+  background: linear-gradient(145deg, #ffffff, #fffafa);
 }
-
 .card-privileges::after {
   background-color: #dc3545;
 }
-
 .card-privileges .card-icon {
   color: #dc3545;
 }
 
-.card-privileges .card-title {
-  color: #2c3e50;
-}
-
-.card-report-ore {
-  background: linear-gradient(145deg, #ffffff, #f8f6ff) !important;
-}
-
-.card-report-ore::after {
-  background-color: #7b68ee !important;
-}
-
-.card-report-ore .card-icon {
-  color: #7b68ee !important;
-}
-
-.card-report-ore .card-title {
-  color: #2c3e50 !important;
-}
-
-/* Spaziatura tra le righe - ridotta per compattare verticalmente */
-.row {
-  margin-bottom: 1rem;
-}
-
-/* Spaziatura prima riga - ridotta per spostare le card più in alto */
-.row:first-of-type {
-  margin-top: 0.5rem;
-}
-
-/* Logout button moderno */
-.navbar .btn-outline-light {
-  border-width: 2px;
-  border-radius: 8px;
-  padding: 0.4rem 1rem;
+/* Status backup proporzionato */
+#backup-status {
+  font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
+  text-align: center;
+  margin-top: 0.5rem;
+  line-height: 1.2;
+}
+
+.backup-success {
+  color: #28a745;
+}
+
+.backup-error {
+  color: #dc3545;
+}
+
+.backup-loading {
+  color: #ffc107;
+}
+
+/* Logout button compatto e visibile */
+.navbar .btn-outline-light {
+  border-width: 1px;
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+  position: relative;
+  z-index: 1050; /* Assicura che sia sopra tutto */
 }
 
 .navbar .btn-outline-light:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Media query per responsività */
-@media (max-width: 992px) {
-  .card-body {
-    min-height: 120px;
-    padding: 1.5rem 1rem;
+/* Assicura che il logout sia sempre visibile */
+.navbar .ms-auto {
+  margin-left: auto !important;
+  z-index: 1050;
+}
+
+/* Media queries con layout centrato e spaziatura mantenuta */
+@media (max-width: 1100px) {
+  /* Centra perfettamente anche con 2 card per riga mantenendo lo spazio */
+  .container-fluid {
+    max-width: calc(329.69px * 2 + 3rem); /* 2 card + spazio tra loro + padding */
   }
   
-  .card-icon {
-    font-size: 1.8rem;
-  }
-  
-  .container.mt-5 {
-    margin-top: 1.2rem !important; /* Ridotto per mobile */
+  .row {
+    justify-content: center;
   }
 }
 
 @media (max-width: 768px) {
-  .card-body {
-    min-height: 100px;
-    padding: 1.2rem 0.8rem;
+  .container-fluid {
+    padding: 1rem 0.5rem;
+    max-width: calc(329.69px * 2 + 2rem); /* Ridotto leggermente per mobile */
   }
   
-  .card-icon {
-    font-size: 1.6rem;
+  .row {
+    justify-content: center;
   }
   
-  .card-title {
-    font-size: 1rem;
+  .col-md-4 {
+    width: auto;
+    flex-basis: auto;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 700px) {
+  /* 1 card per riga perfettamente centrata */
+  .container-fluid {
+    max-width: calc(329.69px + 2rem); /* Card + padding laterale */
   }
   
-  .container {
-    padding-top: 0.7rem; /* Ridotto per mobile */
+  .row {
+    flex-direction: column;
+    align-items: center;
   }
   
-  .container.mt-5 {
-    margin-top: 0.8rem !important; /* Ridotto per mobile */
+  .col-md-4 {
+    width: auto;
+    flex-basis: auto;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Previeni scroll verticale */
+@media (min-height: 600px) {
+  body {
+    overflow-y: hidden;
+  }
+}
+
+/* Per schermi molto bassi, permetti scroll */
+@media (max-height: 599px) {
+  body {
+    overflow-y: auto;
+  }
+  
+  .container-fluid {
+    height: auto;
+    min-height: calc(100vh - 50px);
   }
 }
