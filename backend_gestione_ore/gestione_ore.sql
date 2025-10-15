@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mag 26, 2025 alle 10:43
+-- Creato il: Ott 15, 2025 alle 16:29
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -18,8 +18,147 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
+-- Database: `gestioneoredb`
+--
+CREATE DATABASE IF NOT EXISTS `gestioneoredb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `gestioneoredb`;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `dipendenti`
+--
+
+CREATE TABLE `dipendenti` (
+  `id` bigint(20) NOT NULL,
+  `attivo` bit(1) NOT NULL,
+  `cognome` varchar(100) NOT NULL,
+  `data_creazione` datetime(6) NOT NULL,
+  `data_modifica` datetime(6) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `qualifica` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `dipendenti`
+--
+
+INSERT INTO `dipendenti` (`id`, `attivo`, `cognome`, `data_creazione`, `data_modifica`, `nome`, `qualifica`) VALUES
+(1, b'1', 'Rossi', '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', 'Mario', 'Dirigente'),
+(2, b'1', 'Bianchi', '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', 'Giuseppe', 'Impiegato'),
+(3, b'1', 'Verdi', '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', 'Antonio', 'Tecnico'),
+(4, b'1', 'Neri', '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', 'Francesca', 'Amministrativo');
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `turni`
+--
+
+CREATE TABLE `turni` (
+  `id` bigint(20) NOT NULL,
+  `data_creazione` datetime(6) NOT NULL,
+  `data_modifica` datetime(6) NOT NULL,
+  `data_ora_ingresso` datetime(6) NOT NULL,
+  `data_ora_uscita` datetime(6) NOT NULL,
+  `ore_feriali` decimal(10,2) DEFAULT NULL,
+  `ore_festivo_diurno` decimal(10,2) DEFAULT NULL,
+  `ore_notturno_festivo` decimal(10,2) DEFAULT NULL,
+  `ore_totali` decimal(10,2) DEFAULT NULL,
+  `dipendente_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `turni`
+--
+
+INSERT INTO `turni` (`id`, `data_creazione`, `data_modifica`, `data_ora_ingresso`, `data_ora_uscita`, `ore_feriali`, `ore_festivo_diurno`, `ore_notturno_festivo`, `ore_totali`, `dipendente_id`) VALUES
+(1, '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', '2023-06-05 08:00:00.000000', '2023-06-05 16:00:00.000000', 8.00, 0.00, 0.00, 8.00, 1),
+(2, '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', '2023-06-06 08:00:00.000000', '2023-06-06 17:00:00.000000', 9.00, 0.00, 0.00, 9.00, 1),
+(3, '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', '2023-06-15 14:00:00.000000', '2023-06-15 22:30:00.000000', 8.00, 0.00, 0.50, 8.50, 1),
+(4, '2025-05-05 18:14:24.000000', '2025-05-05 18:14:24.000000', '2023-06-05 09:00:00.000000', '2023-06-05 18:00:00.000000', 9.00, 0.00, 0.00, 9.00, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `utenti`
+--
+
+CREATE TABLE `utenti` (
+  `id` bigint(20) NOT NULL,
+  `attivo` bit(1) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `ruolo` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `utenti`
+--
+
+INSERT INTO `utenti` (`id`, `attivo`, `password`, `ruolo`, `username`) VALUES
+(1, b'1', '$2a$10$q8YiQzXImG4FtNp/RWLcB.MtEBQEAAGgXKsU9D3BiBhyT0H7xXl2i', 'ADMIN', 'admin');
+
+--
+-- Indici per le tabelle scaricate
+--
+
+--
+-- Indici per le tabelle `dipendenti`
+--
+ALTER TABLE `dipendenti`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indici per le tabelle `turni`
+--
+ALTER TABLE `turni`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKk7p84fkbelp4jvnoly2je80bs` (`dipendente_id`);
+
+--
+-- Indici per le tabelle `utenti`
+--
+ALTER TABLE `utenti`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UKtn8mwk6h2wn28yyj7fco65gls` (`username`);
+
+--
+-- AUTO_INCREMENT per le tabelle scaricate
+--
+
+--
+-- AUTO_INCREMENT per la tabella `dipendenti`
+--
+ALTER TABLE `dipendenti`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT per la tabella `turni`
+--
+ALTER TABLE `turni`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT per la tabella `utenti`
+--
+ALTER TABLE `utenti`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Limiti per le tabelle scaricate
+--
+
+--
+-- Limiti per la tabella `turni`
+--
+ALTER TABLE `turni`
+  ADD CONSTRAINT `FKk7p84fkbelp4jvnoly2je80bs` FOREIGN KEY (`dipendente_id`) REFERENCES `dipendenti` (`id`);
+--
 -- Database: `gestione_ore`
 --
+CREATE DATABASE IF NOT EXISTS `gestione_ore` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `gestione_ore`;
 
 -- --------------------------------------------------------
 
@@ -83,24 +222,33 @@ INSERT INTO `calcolo_ore` (`id`, `turno_id`, `employee_id`, `cognome`, `nome`, `
 (120, 99, 13, 'AVALLONE', 'EMILIO', 'VV', '2025-05-22', '20:57:00', '2025-05-22', '21:57:00', 1.00, 0.00, 0.00, 0.00, 1.00, '2025-05-22 13:57:06', '2025-05-22 13:57:06', 'Centrale'),
 (121, 96, 61, 'CHIONNA', 'VINCENZO', 'NCCR', '2025-05-25', '08:00:00', '2025-05-25', '20:00:00', 0.00, 0.00, 12.00, 0.00, 12.00, '2025-05-25 06:37:21', '2025-05-25 06:37:21', 'Francavilla Fontana'),
 (122, 100, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-02', '08:00:00', '2025-05-02', '22:00:00', 14.00, 0.00, 0.00, 0.00, 14.00, '2025-05-25 06:44:30', '2025-05-25 06:44:30', 'Centrale'),
-(124, 101, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-03', '20:00:00', '2025-05-04', '08:30:00', 2.00, 2.00, 2.50, 6.00, 12.50, '2025-05-25 06:46:55', '2025-05-25 06:46:55', 'Centrale'),
 (125, 102, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-05', '08:00:00', '2025-05-05', '20:15:00', 12.25, 0.00, 0.00, 0.00, 12.25, '2025-05-25 06:47:45', '2025-05-25 06:47:45', 'Centrale'),
 (126, 103, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-06', '20:00:00', '2025-05-07', '08:00:00', 4.00, 8.00, 0.00, 0.00, 12.00, '2025-05-25 06:48:30', '2025-05-25 06:48:30', 'Centrale'),
 (127, 104, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-09', '08:00:00', '2025-05-09', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 06:50:23', '2025-05-25 06:50:23', 'Centrale'),
 (128, 105, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-10', '08:15:00', '2025-05-10', '21:30:00', 13.25, 0.00, 0.00, 0.00, 13.25, '2025-05-25 06:53:05', '2025-05-25 06:53:05', 'Centrale'),
 (129, 106, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-13', '20:00:00', '2025-05-14', '08:00:00', 4.00, 8.00, 0.00, 0.00, 12.00, '2025-05-25 06:53:42', '2025-05-25 06:53:42', 'Centrale'),
 (130, 107, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-11', '08:00:00', '2025-05-11', '22:00:00', 0.00, 0.00, 14.00, 0.00, 14.00, '2025-05-25 06:54:46', '2025-05-25 06:54:46', 'Centrale'),
-(132, 109, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-25', '08:00:00', '2025-05-25', '22:00:00', 0.00, 0.00, 14.00, 0.00, 14.00, '2025-05-25 06:58:53', '2025-05-25 06:58:53', 'Francavilla Fontana'),
 (133, 110, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-26', '08:00:00', '2025-05-26', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 07:27:58', '2025-05-25 07:27:58', 'Centrale'),
 (134, 111, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-27', '08:00:00', '2025-05-27', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 07:28:44', '2025-05-25 07:28:44', 'Centrale'),
-(135, 112, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 07:29:16', '2025-05-25 07:29:16', 'Centrale'),
 (136, 113, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-15', '08:00:00', '2025-05-15', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 07:30:47', '2025-05-25 07:30:47', 'Centrale'),
 (137, 114, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-16', '08:00:00', '2025-05-16', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 07:31:08', '2025-05-25 07:31:08', 'Centrale'),
 (138, 115, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-17', '08:00:00', '2025-05-17', '20:02:00', 12.03, 0.00, 0.00, 0.00, 12.03, '2025-05-25 07:31:32', '2025-05-25 07:31:32', 'Centrale'),
 (139, 116, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-18', '08:00:00', '2025-05-18', '20:00:00', 0.00, 0.00, 12.00, 0.00, 12.00, '2025-05-25 07:31:50', '2025-05-25 07:31:50', 'Centrale'),
 (140, 117, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-19', '08:00:00', '2025-05-19', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 07:32:07', '2025-05-25 07:32:07', 'Centrale'),
 (141, 118, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-20', '08:00:00', '2025-05-20', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-25 07:32:31', '2025-05-25 07:32:31', 'Centrale'),
-(142, 119, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-21', '08:00:00', '2025-05-21', '22:00:00', 14.00, 0.00, 0.00, 0.00, 14.00, '2025-05-25 07:32:53', '2025-05-25 07:32:53', 'Centrale');
+(142, 119, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-21', '08:00:00', '2025-05-21', '22:00:00', 14.00, 0.00, 0.00, 0.00, 14.00, '2025-05-25 07:32:53', '2025-05-25 07:32:53', 'Centrale'),
+(143, 120, 16, 'BALDARI', 'LUIGI ANTONIO', 'VC', '2025-05-10', '08:00:00', '2025-05-10', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-26 13:20:34', '2025-05-26 13:20:34', 'Francavilla Fontana'),
+(144, 121, 16, 'BALDARI', 'LUIGI ANTONIO', 'VC', '2025-05-26', '12:00:00', '2025-05-26', '20:00:00', 8.00, 0.00, 0.00, 0.00, 8.00, '2025-05-26 13:21:06', '2025-05-26 13:21:06', 'Ostuni'),
+(158, 122, 81, 'D\'AMURI', 'FABRIZIO', 'VV', '2025-05-26', '08:00:00', '2025-05-26', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-28 07:18:03', '2025-05-28 07:18:03', 'Nucleo Nautico'),
+(164, 109, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-25', '08:00:00', '2025-05-25', '22:00:00', 0.00, 0.00, 14.00, 0.00, 14.00, '2025-05-28 13:08:21', '2025-05-28 13:08:21', 'Centrale'),
+(167, 124, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-01', '08:00:00', '2025-05-01', '20:00:00', 0.00, 0.00, 12.00, 0.00, 12.00, '2025-05-28 19:16:55', '2025-05-28 19:16:55', 'Centrale'),
+(168, 125, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-31', '08:00:00', '2025-05-31', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-28 19:17:36', '2025-05-28 19:17:36', 'Centrale'),
+(169, 126, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-29', '08:00:00', '2025-05-29', '22:00:00', 14.00, 0.00, 0.00, 0.00, 14.00, '2025-05-28 19:18:42', '2025-05-28 19:18:42', 'Centrale'),
+(171, 128, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-24', '08:00:00', '2025-05-24', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-28 19:19:32', '2025-05-28 19:19:32', 'Centrale'),
+(175, 129, 13, 'AVALLONE', 'EMILIO', 'VV', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-05-28 20:22:26', '2025-05-28 20:22:26', 'Brindisi (Aeroportuale)'),
+(176, 123, 134, 'GIUDICE', 'ALESSANDRO', 'CS', '2025-05-26', '20:00:00', '2025-05-27', '18:00:00', 14.00, 8.00, 0.00, 0.00, 22.00, '2025-06-06 20:59:39', '2025-06-06 20:59:39', 'Centrale'),
+(177, 127, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-23', '08:00:00', '2025-05-23', '20:00:00', 12.00, 0.00, 0.00, 0.00, 12.00, '2025-06-06 21:07:28', '2025-06-06 21:07:28', 'Brindisi (Aeroportuale)'),
+(178, 101, 54, 'CAZZATO', 'ALESSANDRO', 'VC', '2025-05-03', '20:00:00', '2025-05-04', '08:30:00', 2.00, 2.00, 2.50, 6.00, 12.50, '2025-06-06 21:07:36', '2025-06-06 21:07:36', 'Nucleo Sommozzatori');
 
 -- --------------------------------------------------------
 
@@ -131,7 +279,7 @@ INSERT INTO `dipendenti` (`id`, `qualifica`, `cognome`, `nome`, `sede`, `version
 (5, 'DSLG', 'ANELLI', 'SANDRO', 'Centrale', 1, '2025-05-22 10:09:35', NULL),
 (6, 'CS', 'APRILE', 'GIANLUCA', 'Francavilla Fontana', 1, '2025-05-22 10:09:35', NULL),
 (7, 'VESC', 'ARGENTIERO', 'ANTONIO', 'Ostuni', 1, '2025-05-22 10:09:35', NULL),
-(8, 'CR', 'ARGENTIERO', 'VITO', 'Ostuni', 1, '2025-05-22 10:09:35', NULL),
+(8, 'CR', 'ARGENTIERO', 'VITO', 'Ostuni', 1, '2025-05-28 10:18:50', NULL),
 (9, 'VV', 'ARPA', 'DAVIDE', 'Centrale', 1, '2025-05-22 10:09:35', NULL),
 (10, 'VE', 'ARSENA', 'FLORIANA', 'Francavilla Fontana', 1, '2025-05-22 10:09:35', NULL),
 (11, 'VV', 'AUGURIO', 'VALERIO', 'Centrale', 1, '2025-05-22 10:09:35', NULL),
@@ -517,6 +665,61 @@ INSERT INTO `dipendenti` (`id`, `qualifica`, `cognome`, `nome`, `sede`, `version
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `log_modifiche`
+--
+
+CREATE TABLE `log_modifiche` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `turno_id` int(11) NOT NULL,
+  `dipendente` varchar(255) NOT NULL,
+  `old_entry_date` date DEFAULT NULL,
+  `old_entry_time` time DEFAULT NULL,
+  `old_exit_date` date DEFAULT NULL,
+  `old_exit_time` time DEFAULT NULL,
+  `old_sede` varchar(100) DEFAULT NULL,
+  `new_entry_date` date NOT NULL,
+  `new_entry_time` time NOT NULL,
+  `new_exit_date` date NOT NULL,
+  `new_exit_time` time NOT NULL,
+  `new_sede` varchar(100) DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `log_modifiche`
+--
+
+INSERT INTO `log_modifiche` (`id`, `user_id`, `turno_id`, `dipendente`, `old_entry_date`, `old_entry_time`, `old_exit_date`, `old_exit_time`, `old_sede`, `new_entry_date`, `new_entry_time`, `new_exit_date`, `new_exit_time`, `new_sede`, `modified_at`) VALUES
+(1, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '21:00:00', '2025-05-27', '08:00:00', 'Centrale', '2025-05-26', '21:00:00', '2025-05-27', '09:00:00', 'Centrale', '2025-05-28 06:21:48'),
+(2, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '21:00:00', '2025-05-27', '09:00:00', 'Centrale', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Centrale', '2025-05-28 06:22:32'),
+(3, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Centrale', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Francavilla Fontana', '2025-05-28 06:23:11'),
+(4, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Francavilla Fontana', '2025-05-26', '20:00:00', '2025-05-27', '10:00:00', 'Centrale', '2025-05-28 06:27:03'),
+(5, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '10:00:00', 'Centrale', '2025-05-26', '20:00:00', '2025-05-27', '10:00:00', 'Brindisi (Aeroportuale)', '2025-05-28 06:30:47'),
+(6, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '10:00:00', 'Brindisi (Aeroportuale)', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Centrale', '2025-05-28 06:39:33'),
+(7, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Centrale', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Nucleo Sommozzatori', '2025-05-28 06:42:06'),
+(8, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '09:00:00', 'Nucleo Sommozzatori', '2025-05-26', '20:00:00', '2025-05-27', '11:00:00', 'Centrale', '2025-05-28 06:47:39'),
+(9, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '11:00:00', 'Centrale', '2025-05-26', '20:00:00', '2025-05-27', '13:00:00', 'Centrale', '2025-05-28 07:17:01'),
+(10, 2, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '13:00:00', 'Centrale', '2025-05-26', '20:00:00', '2025-05-27', '13:00:00', 'Nucleo Nautico', '2025-05-28 07:17:08'),
+(11, 2, 122, 'D\'AMURI FABRIZIO', '2025-05-26', '08:00:00', '2025-05-26', '20:00:00', NULL, '2025-05-26', '08:00:00', '2025-05-26', '20:00:00', 'Nucleo Nautico', '2025-05-28 07:18:03'),
+(12, 2, 112, 'CAZZATO ALESSANDRO', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', NULL, '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Ostuni', '2025-05-28 07:30:23'),
+(13, 2, 112, 'CAZZATO ALESSANDRO', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Ostuni', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Ostuni', '2025-05-28 07:42:05'),
+(14, 2, 112, 'CAZZATO ALESSANDRO', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Ostuni', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Francavilla Fontana', '2025-05-28 07:42:50'),
+(15, 2, 112, 'CAZZATO ALESSANDRO', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Francavilla Fontana', '2025-05-28', '08:00:00', '2025-05-28', '21:00:00', 'Francavilla Fontana', '2025-05-28 07:43:00'),
+(16, 2, 112, 'CAZZATO ALESSANDRO', '2025-05-28', '08:00:00', '2025-05-28', '21:00:00', 'Francavilla Fontana', '2025-05-28', '08:00:00', '2025-05-28', '21:00:00', 'Centrale', '2025-05-28 07:47:26'),
+(17, 2, 109, 'CAZZATO ALESSANDRO', '2025-05-25', '08:00:00', '2025-05-25', '22:00:00', 'Francavilla Fontana', '2025-05-25', '08:00:00', '2025-05-25', '22:00:00', 'Centrale', '2025-05-28 13:08:21'),
+(18, 2, 112, 'CAZZATO ALESSANDRO', '2025-05-28', '08:00:00', '2025-05-28', '21:00:00', 'Centrale', '2025-05-28', '08:00:00', '2025-05-28', '21:00:00', 'Francavilla Fontana', '2025-05-28 13:15:19'),
+(19, 2, 112, 'CAZZATO ALESSANDRO', '2025-05-28', '08:00:00', '2025-05-28', '21:00:00', 'Francavilla Fontana', '2025-05-28', '08:00:00', '2025-05-28', '21:00:00', 'Brindisi (Aeroportuale)', '2025-05-28 13:21:01'),
+(20, 2, 127, 'CAZZATO ALESSANDRO', '2025-05-23', '08:00:00', '2025-05-23', '20:00:00', 'Nucleo Sommozzatori', '2025-05-23', '08:00:00', '2025-05-23', '20:00:00', 'Ostuni', '2025-05-28 19:59:33'),
+(21, 2, 129, 'AVALLONE EMILIO', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Bari corso Sommozzatori', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Brindisi corso sommozzatori', '2025-05-28 20:20:43'),
+(22, 2, 129, 'AVALLONE EMILIO', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Brindisi corso sommozzatori', '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', 'Brindisi (Aeroportuale)', '2025-05-28 20:22:26'),
+(23, 5, 123, 'GIUDICE ALESSANDRO', '2025-05-26', '20:00:00', '2025-05-27', '13:00:00', 'Nucleo Nautico', '2025-05-26', '20:00:00', '2025-05-27', '18:00:00', 'Centrale', '2025-06-06 20:59:39'),
+(24, 3, 127, 'CAZZATO ALESSANDRO', '2025-05-23', '08:00:00', '2025-05-23', '20:00:00', 'Ostuni', '2025-05-23', '08:00:00', '2025-05-23', '20:00:00', 'Brindisi (Aeroportuale)', '2025-06-06 21:07:28'),
+(25, 3, 101, 'CAZZATO ALESSANDRO', '2025-05-03', '20:00:00', '2025-05-04', '08:30:00', 'Centrale', '2025-05-03', '20:00:00', '2025-05-04', '08:30:00', 'Nucleo Sommozzatori', '2025-06-06 21:07:36');
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `qualifiche`
 --
 
@@ -582,7 +785,6 @@ CREATE TABLE `sedi` (
 --
 
 INSERT INTO `sedi` (`id`, `nome`) VALUES
-(10, 'Bari corso sommozz.'),
 (4, 'Brindisi (Aeroportuale)'),
 (1, 'Centrale'),
 (3, 'Francavilla Fontana'),
@@ -646,24 +848,33 @@ INSERT INTO `turni` (`id`, `employee_id`, `entry_date`, `entry_time`, `exit_date
 (97, 61, '2025-05-10', '20:00:00', '2025-05-11', '08:00:00', '2025-05-19 11:56:42', NULL, NULL, 1, '2025-05-22 10:09:35', NULL),
 (99, 13, '2025-05-22', '20:57:00', '2025-05-22', '21:57:00', '2025-05-22 15:57:06', NULL, NULL, 1, '2025-05-22 13:57:06', NULL),
 (100, 54, '2025-05-02', '08:00:00', '2025-05-02', '22:00:00', '2025-05-25 08:44:30', NULL, NULL, 1, '2025-05-25 06:44:30', NULL),
-(101, 54, '2025-05-03', '20:00:00', '2025-05-04', '08:30:00', '2025-05-25 08:45:25', NULL, 'Centrale', 1, '2025-05-25 06:46:55', NULL),
+(101, 54, '2025-05-03', '20:00:00', '2025-05-04', '08:30:00', '2025-05-25 08:45:25', NULL, 'Nucleo Sommozzatori', 1, '2025-06-06 21:07:36', NULL),
 (102, 54, '2025-05-05', '08:00:00', '2025-05-05', '20:15:00', '2025-05-25 08:47:45', NULL, NULL, 1, '2025-05-25 06:47:45', NULL),
 (103, 54, '2025-05-06', '20:00:00', '2025-05-07', '08:00:00', '2025-05-25 08:48:30', NULL, NULL, 1, '2025-05-25 06:48:30', NULL),
 (104, 54, '2025-05-09', '08:00:00', '2025-05-09', '20:00:00', '2025-05-25 08:50:23', NULL, NULL, 1, '2025-05-25 06:50:23', NULL),
 (105, 54, '2025-05-10', '08:15:00', '2025-05-10', '21:30:00', '2025-05-25 08:53:05', NULL, NULL, 1, '2025-05-25 06:53:05', NULL),
 (106, 54, '2025-05-13', '20:00:00', '2025-05-14', '08:00:00', '2025-05-25 08:53:42', NULL, NULL, 1, '2025-05-25 06:53:42', NULL),
 (107, 54, '2025-05-11', '08:00:00', '2025-05-11', '22:00:00', '2025-05-25 08:54:46', NULL, NULL, 1, '2025-05-25 06:54:46', NULL),
-(109, 54, '2025-05-25', '08:00:00', '2025-05-25', '22:00:00', '2025-05-25 08:58:53', NULL, 'Francavilla Fontana', 1, '2025-05-25 06:58:53', NULL),
+(109, 54, '2025-05-25', '08:00:00', '2025-05-25', '22:00:00', '2025-05-25 08:58:53', NULL, 'Centrale', 1, '2025-05-28 13:08:21', NULL),
 (110, 54, '2025-05-26', '08:00:00', '2025-05-26', '20:00:00', '2025-05-25 09:27:58', NULL, NULL, 1, '2025-05-25 07:27:58', NULL),
 (111, 54, '2025-05-27', '08:00:00', '2025-05-27', '20:00:00', '2025-05-25 09:28:44', NULL, NULL, 1, '2025-05-25 07:28:44', NULL),
-(112, 54, '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', '2025-05-25 09:29:16', NULL, NULL, 1, '2025-05-25 07:29:16', NULL),
 (113, 54, '2025-05-15', '08:00:00', '2025-05-15', '20:00:00', '2025-05-25 09:30:47', NULL, NULL, 1, '2025-05-25 07:30:47', NULL),
 (114, 54, '2025-05-16', '08:00:00', '2025-05-16', '20:00:00', '2025-05-25 09:31:08', NULL, NULL, 1, '2025-05-25 07:31:08', NULL),
 (115, 54, '2025-05-17', '08:00:00', '2025-05-17', '20:02:00', '2025-05-25 09:31:32', NULL, NULL, 1, '2025-05-25 07:31:32', NULL),
 (116, 54, '2025-05-18', '08:00:00', '2025-05-18', '20:00:00', '2025-05-25 09:31:50', NULL, NULL, 1, '2025-05-25 07:31:50', NULL),
 (117, 54, '2025-05-19', '08:00:00', '2025-05-19', '20:00:00', '2025-05-25 09:32:07', NULL, NULL, 1, '2025-05-25 07:32:07', NULL),
 (118, 54, '2025-05-20', '08:00:00', '2025-05-20', '20:00:00', '2025-05-25 09:32:31', NULL, NULL, 1, '2025-05-25 07:32:31', NULL),
-(119, 54, '2025-05-21', '08:00:00', '2025-05-21', '22:00:00', '2025-05-25 09:32:53', NULL, NULL, 1, '2025-05-25 07:32:53', NULL);
+(119, 54, '2025-05-21', '08:00:00', '2025-05-21', '22:00:00', '2025-05-25 09:32:53', NULL, NULL, 1, '2025-05-25 07:32:53', NULL),
+(120, 16, '2025-05-10', '08:00:00', '2025-05-10', '20:00:00', '2025-05-26 15:20:34', NULL, 'Francavilla Fontana', 1, '2025-05-26 13:20:34', NULL),
+(121, 16, '2025-05-26', '12:00:00', '2025-05-26', '20:00:00', '2025-05-26 15:21:06', NULL, 'Ostuni', 1, '2025-05-26 13:21:06', NULL),
+(122, 81, '2025-05-26', '08:00:00', '2025-05-26', '20:00:00', '2025-05-26 16:05:33', NULL, 'Nucleo Nautico', 1, '2025-05-28 07:18:03', NULL),
+(123, 134, '2025-05-26', '20:00:00', '2025-05-27', '18:00:00', '2025-05-26 16:13:58', '5', 'Centrale', 1, '2025-06-06 20:59:39', NULL),
+(124, 54, '2025-05-01', '08:00:00', '2025-05-01', '20:00:00', '2025-05-28 21:16:55', NULL, NULL, 1, '2025-05-28 19:16:55', NULL),
+(125, 54, '2025-05-31', '08:00:00', '2025-05-31', '20:00:00', '2025-05-28 21:17:36', NULL, NULL, 1, '2025-05-28 19:17:36', NULL),
+(126, 54, '2025-05-29', '08:00:00', '2025-05-29', '22:00:00', '2025-05-28 21:18:42', NULL, NULL, 1, '2025-05-28 19:18:42', NULL),
+(127, 54, '2025-05-23', '08:00:00', '2025-05-23', '20:00:00', '2025-05-28 21:19:05', NULL, 'Brindisi (Aeroportuale)', 1, '2025-06-06 21:07:28', NULL),
+(128, 54, '2025-05-24', '08:00:00', '2025-05-24', '20:00:00', '2025-05-28 21:19:32', NULL, NULL, 1, '2025-05-28 19:19:32', NULL),
+(129, 13, '2025-05-28', '08:00:00', '2025-05-28', '20:00:00', '2025-05-28 22:06:05', NULL, 'Brindisi (Aeroportuale)', 1, '2025-05-28 20:22:26', NULL);
 
 -- --------------------------------------------------------
 
@@ -686,8 +897,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `ruolo`) VALUES
 (1, 'user', '$2y$10$srRJmW0ESjKB1vVeIMmkeufT5U7qWRK3l50BfE1cV863zxMPRexWi', 'user'),
 (2, 'admin', '$2b$12$Y83gcuudnuobBeqWaxUk0e9xb.3Fo9dZ/PRqrmFnm7cOTXi73vaD.', 'admin'),
 (3, 'rootadmin', '$2b$12$Y83gcuudnuobBeqWaxUk0e9xb.3Fo9dZ/PRqrmFnm7cOTXi73vaD.', 'superadmin'),
-(5, 'antonella_ragno', '$2y$10$gS7g3re3MBHraBBuJ6QcdONILg6m2vfFeN.Orc5LiQtYr3wJ62bWa', 'admin'),
-(6, 'antonio', '$2y$10$pcQlYYCxxdbBrvWdFKEefum7MreSz2gQTJ8wnuTdvIUjVDQ8mlasa', 'admin');
+(4, 'antonella_ragno', '$2y$10$gS7g3re3MBHraBBuJ6QcdONILg6m2vfFeN.Orc5LiQtYr3wJ62bWa', 'admin'),
+(5, 'flavia_barca', '$2y$10$cYs/2rZTKY6tZijWaSkh9e4iaZUwASws6/o.crsP2RlBgv2IiUwNa', 'admin');
 
 -- --------------------------------------------------------
 
@@ -720,6 +931,15 @@ ALTER TABLE `calcolo_ore`
 --
 ALTER TABLE `dipendenti`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indici per le tabelle `log_modifiche`
+--
+ALTER TABLE `log_modifiche`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `turno_id` (`turno_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `modified_at` (`modified_at`);
 
 --
 -- Indici per le tabelle `qualifiche`
@@ -763,13 +983,19 @@ ALTER TABLE `users_sessions`
 -- AUTO_INCREMENT per la tabella `calcolo_ore`
 --
 ALTER TABLE `calcolo_ore`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=179;
 
 --
 -- AUTO_INCREMENT per la tabella `dipendenti`
 --
 ALTER TABLE `dipendenti`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=405;
+
+--
+-- AUTO_INCREMENT per la tabella `log_modifiche`
+--
+ALTER TABLE `log_modifiche`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT per la tabella `qualifiche`
@@ -781,19 +1007,19 @@ ALTER TABLE `qualifiche`
 -- AUTO_INCREMENT per la tabella `sedi`
 --
 ALTER TABLE `sedi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT per la tabella `turni`
 --
 ALTER TABLE `turni`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
 
 --
 -- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT per la tabella `users_sessions`
@@ -823,6 +1049,464 @@ ALTER TABLE `turni`
 --
 ALTER TABLE `users_sessions`
   ADD CONSTRAINT `users_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+--
+-- Database: `phpmyadmin`
+--
+CREATE DATABASE IF NOT EXISTS `phpmyadmin` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `phpmyadmin`;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__bookmark`
+--
+
+CREATE TABLE `pma__bookmark` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `dbase` varchar(255) NOT NULL DEFAULT '',
+  `user` varchar(255) NOT NULL DEFAULT '',
+  `label` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `query` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Bookmarks';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__central_columns`
+--
+
+CREATE TABLE `pma__central_columns` (
+  `db_name` varchar(64) NOT NULL,
+  `col_name` varchar(64) NOT NULL,
+  `col_type` varchar(64) NOT NULL,
+  `col_length` text DEFAULT NULL,
+  `col_collation` varchar(64) NOT NULL,
+  `col_isNull` tinyint(1) NOT NULL,
+  `col_extra` varchar(255) DEFAULT '',
+  `col_default` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Central list of columns';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__column_info`
+--
+
+CREATE TABLE `pma__column_info` (
+  `id` int(5) UNSIGNED NOT NULL,
+  `db_name` varchar(64) NOT NULL DEFAULT '',
+  `table_name` varchar(64) NOT NULL DEFAULT '',
+  `column_name` varchar(64) NOT NULL DEFAULT '',
+  `comment` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `mimetype` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `transformation` varchar(255) NOT NULL DEFAULT '',
+  `transformation_options` varchar(255) NOT NULL DEFAULT '',
+  `input_transformation` varchar(255) NOT NULL DEFAULT '',
+  `input_transformation_options` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Column information for phpMyAdmin';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__designer_settings`
+--
+
+CREATE TABLE `pma__designer_settings` (
+  `username` varchar(64) NOT NULL,
+  `settings_data` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Settings related to Designer';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__export_templates`
+--
+
+CREATE TABLE `pma__export_templates` (
+  `id` int(5) UNSIGNED NOT NULL,
+  `username` varchar(64) NOT NULL,
+  `export_type` varchar(10) NOT NULL,
+  `template_name` varchar(64) NOT NULL,
+  `template_data` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved export templates';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__favorite`
+--
+
+CREATE TABLE `pma__favorite` (
+  `username` varchar(64) NOT NULL,
+  `tables` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Favorite tables';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__history`
+--
+
+CREATE TABLE `pma__history` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `username` varchar(64) NOT NULL DEFAULT '',
+  `db` varchar(64) NOT NULL DEFAULT '',
+  `table` varchar(64) NOT NULL DEFAULT '',
+  `timevalue` timestamp NOT NULL DEFAULT current_timestamp(),
+  `sqlquery` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='SQL history for phpMyAdmin';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__navigationhiding`
+--
+
+CREATE TABLE `pma__navigationhiding` (
+  `username` varchar(64) NOT NULL,
+  `item_name` varchar(64) NOT NULL,
+  `item_type` varchar(64) NOT NULL,
+  `db_name` varchar(64) NOT NULL,
+  `table_name` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Hidden items of navigation tree';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__pdf_pages`
+--
+
+CREATE TABLE `pma__pdf_pages` (
+  `db_name` varchar(64) NOT NULL DEFAULT '',
+  `page_nr` int(10) UNSIGNED NOT NULL,
+  `page_descr` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='PDF relation pages for phpMyAdmin';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__recent`
+--
+
+CREATE TABLE `pma__recent` (
+  `username` varchar(64) NOT NULL,
+  `tables` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Recently accessed tables';
+
+--
+-- Dump dei dati per la tabella `pma__recent`
+--
+
+INSERT INTO `pma__recent` (`username`, `tables`) VALUES
+('root', '[{\"db\":\"gestione_ore\",\"table\":\"users\"},{\"db\":\"gestione_ore\",\"table\":\"turni\"},{\"db\":\"gestione_ore\",\"table\":\"log_modifiche\"},{\"db\":\"gestione_ore\",\"table\":\"users_sessions\"},{\"db\":\"gestione_ore\",\"table\":\"qualifiche\"},{\"db\":\"gestione_ore\",\"table\":\"calcolo_ore\"},{\"db\":\"gestione_ore\",\"table\":\"dipendenti\"},{\"db\":\"gestione_ore\",\"table\":\"sedi\"},{\"db\":\"gestioneoredb\",\"table\":\"dipendenti\"},{\"db\":\"gestione_turni\",\"table\":\"turni\"}]');
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__relation`
+--
+
+CREATE TABLE `pma__relation` (
+  `master_db` varchar(64) NOT NULL DEFAULT '',
+  `master_table` varchar(64) NOT NULL DEFAULT '',
+  `master_field` varchar(64) NOT NULL DEFAULT '',
+  `foreign_db` varchar(64) NOT NULL DEFAULT '',
+  `foreign_table` varchar(64) NOT NULL DEFAULT '',
+  `foreign_field` varchar(64) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Relation table';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__savedsearches`
+--
+
+CREATE TABLE `pma__savedsearches` (
+  `id` int(5) UNSIGNED NOT NULL,
+  `username` varchar(64) NOT NULL DEFAULT '',
+  `db_name` varchar(64) NOT NULL DEFAULT '',
+  `search_name` varchar(64) NOT NULL DEFAULT '',
+  `search_data` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved searches';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__table_coords`
+--
+
+CREATE TABLE `pma__table_coords` (
+  `db_name` varchar(64) NOT NULL DEFAULT '',
+  `table_name` varchar(64) NOT NULL DEFAULT '',
+  `pdf_page_number` int(11) NOT NULL DEFAULT 0,
+  `x` float UNSIGNED NOT NULL DEFAULT 0,
+  `y` float UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table coordinates for phpMyAdmin PDF output';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__table_info`
+--
+
+CREATE TABLE `pma__table_info` (
+  `db_name` varchar(64) NOT NULL DEFAULT '',
+  `table_name` varchar(64) NOT NULL DEFAULT '',
+  `display_field` varchar(64) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table information for phpMyAdmin';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__table_uiprefs`
+--
+
+CREATE TABLE `pma__table_uiprefs` (
+  `username` varchar(64) NOT NULL,
+  `db_name` varchar(64) NOT NULL,
+  `table_name` varchar(64) NOT NULL,
+  `prefs` text NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Tables'' UI preferences';
+
+--
+-- Dump dei dati per la tabella `pma__table_uiprefs`
+--
+
+INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, `last_update`) VALUES
+('root', 'gestione_ore', 'qualifiche', '[]', '2025-05-22 12:41:35'),
+('root', 'gestione_ore', 'turni', '{\"sorted_col\":\"`created_by` ASC\"}', '2025-06-06 21:01:47'),
+('root', 'gestione_turni', 'dipendenti', '{\"CREATE_TIME\":\"2025-04-27 19:27:47\",\"col_order\":[1,0,3,2,4,5],\"col_visib\":[1,1,1,1,1,1]}', '2025-04-30 19:26:27');
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__tracking`
+--
+
+CREATE TABLE `pma__tracking` (
+  `db_name` varchar(64) NOT NULL,
+  `table_name` varchar(64) NOT NULL,
+  `version` int(10) UNSIGNED NOT NULL,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
+  `schema_snapshot` text NOT NULL,
+  `schema_sql` text DEFAULT NULL,
+  `data_sql` longtext DEFAULT NULL,
+  `tracking` set('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') DEFAULT NULL,
+  `tracking_active` int(1) UNSIGNED NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Database changes tracking for phpMyAdmin';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__userconfig`
+--
+
+CREATE TABLE `pma__userconfig` (
+  `username` varchar(64) NOT NULL,
+  `timevalue` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `config_data` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User preferences storage for phpMyAdmin';
+
+--
+-- Dump dei dati per la tabella `pma__userconfig`
+--
+
+INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
+('root', '2025-10-15 14:27:51', '{\"Console\\/Mode\":\"collapse\",\"lang\":\"it\",\"NavigationWidth\":276}');
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__usergroups`
+--
+
+CREATE TABLE `pma__usergroups` (
+  `usergroup` varchar(64) NOT NULL,
+  `tab` varchar(64) NOT NULL,
+  `allowed` enum('Y','N') NOT NULL DEFAULT 'N'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User groups with configured menu items';
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `pma__users`
+--
+
+CREATE TABLE `pma__users` (
+  `username` varchar(64) NOT NULL,
+  `usergroup` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Users and their assignments to user groups';
+
+--
+-- Indici per le tabelle scaricate
+--
+
+--
+-- Indici per le tabelle `pma__bookmark`
+--
+ALTER TABLE `pma__bookmark`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indici per le tabelle `pma__central_columns`
+--
+ALTER TABLE `pma__central_columns`
+  ADD PRIMARY KEY (`db_name`,`col_name`);
+
+--
+-- Indici per le tabelle `pma__column_info`
+--
+ALTER TABLE `pma__column_info`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `db_name` (`db_name`,`table_name`,`column_name`);
+
+--
+-- Indici per le tabelle `pma__designer_settings`
+--
+ALTER TABLE `pma__designer_settings`
+  ADD PRIMARY KEY (`username`);
+
+--
+-- Indici per le tabelle `pma__export_templates`
+--
+ALTER TABLE `pma__export_templates`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `u_user_type_template` (`username`,`export_type`,`template_name`);
+
+--
+-- Indici per le tabelle `pma__favorite`
+--
+ALTER TABLE `pma__favorite`
+  ADD PRIMARY KEY (`username`);
+
+--
+-- Indici per le tabelle `pma__history`
+--
+ALTER TABLE `pma__history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `username` (`username`,`db`,`table`,`timevalue`);
+
+--
+-- Indici per le tabelle `pma__navigationhiding`
+--
+ALTER TABLE `pma__navigationhiding`
+  ADD PRIMARY KEY (`username`,`item_name`,`item_type`,`db_name`,`table_name`);
+
+--
+-- Indici per le tabelle `pma__pdf_pages`
+--
+ALTER TABLE `pma__pdf_pages`
+  ADD PRIMARY KEY (`page_nr`),
+  ADD KEY `db_name` (`db_name`);
+
+--
+-- Indici per le tabelle `pma__recent`
+--
+ALTER TABLE `pma__recent`
+  ADD PRIMARY KEY (`username`);
+
+--
+-- Indici per le tabelle `pma__relation`
+--
+ALTER TABLE `pma__relation`
+  ADD PRIMARY KEY (`master_db`,`master_table`,`master_field`),
+  ADD KEY `foreign_field` (`foreign_db`,`foreign_table`);
+
+--
+-- Indici per le tabelle `pma__savedsearches`
+--
+ALTER TABLE `pma__savedsearches`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `u_savedsearches_username_dbname` (`username`,`db_name`,`search_name`);
+
+--
+-- Indici per le tabelle `pma__table_coords`
+--
+ALTER TABLE `pma__table_coords`
+  ADD PRIMARY KEY (`db_name`,`table_name`,`pdf_page_number`);
+
+--
+-- Indici per le tabelle `pma__table_info`
+--
+ALTER TABLE `pma__table_info`
+  ADD PRIMARY KEY (`db_name`,`table_name`);
+
+--
+-- Indici per le tabelle `pma__table_uiprefs`
+--
+ALTER TABLE `pma__table_uiprefs`
+  ADD PRIMARY KEY (`username`,`db_name`,`table_name`);
+
+--
+-- Indici per le tabelle `pma__tracking`
+--
+ALTER TABLE `pma__tracking`
+  ADD PRIMARY KEY (`db_name`,`table_name`,`version`);
+
+--
+-- Indici per le tabelle `pma__userconfig`
+--
+ALTER TABLE `pma__userconfig`
+  ADD PRIMARY KEY (`username`);
+
+--
+-- Indici per le tabelle `pma__usergroups`
+--
+ALTER TABLE `pma__usergroups`
+  ADD PRIMARY KEY (`usergroup`,`tab`,`allowed`);
+
+--
+-- Indici per le tabelle `pma__users`
+--
+ALTER TABLE `pma__users`
+  ADD PRIMARY KEY (`username`,`usergroup`);
+
+--
+-- AUTO_INCREMENT per le tabelle scaricate
+--
+
+--
+-- AUTO_INCREMENT per la tabella `pma__bookmark`
+--
+ALTER TABLE `pma__bookmark`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `pma__column_info`
+--
+ALTER TABLE `pma__column_info`
+  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `pma__export_templates`
+--
+ALTER TABLE `pma__export_templates`
+  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT per la tabella `pma__history`
+--
+ALTER TABLE `pma__history`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `pma__pdf_pages`
+--
+ALTER TABLE `pma__pdf_pages`
+  MODIFY `page_nr` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `pma__savedsearches`
+--
+ALTER TABLE `pma__savedsearches`
+  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- Database: `test`
+--
+CREATE DATABASE IF NOT EXISTS `test` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `test`;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
